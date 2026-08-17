@@ -1,0 +1,11 @@
+# raw ETT data is downloadable; do not commit CSVs
+# rendered PDFs
+*.log
+*.pdf
+*.pyc
+.DS_Store
+.ipynb_checkpoints/
+.venv/
+__pycache__/
+data/*.csv
+env/
