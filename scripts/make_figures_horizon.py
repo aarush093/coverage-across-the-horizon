@@ -64,13 +64,14 @@ for x, y in zip(KS, ref):
 C = int(np.mean([r["C"] for r in ROWS]))
 ncell = [K * C for K in KS]
 ax[1].plot(ncell, own, "s--", color="0.55")
-ax[1].plot([K_REF * C] * 2, [min(own), max(own)], lw=0)      # keep limits stable
 ax[1].set_xlabel(f"cells on the own-grid  (K x {C} channels)")
 ax[1].set_ylabel("mean worst-cell coverage")
 ax[1].set_xticks(ncell)
+_span = max(own) - min(own)
+ax[1].set_ylim(min(own) - .28 * _span, max(own) + .18 * _span)   # headroom for labels
 ax[1].set_title("(b) A minimum over more cells is a lower minimum", fontsize=9)
 for x, y, K in zip(ncell, own, KS):
-    ax[1].text(x, y + .0012, f"K={K}", ha="center", fontsize=6.2)
+    ax[1].text(x, y - .085 * _span, f"K={K}", ha="center", va="top", fontsize=6.2)
 
 f.suptitle(f"Horizon-bucket ablation, mean over {NCFG} ETT configs, target 90%",
            fontsize=10)
@@ -109,11 +110,14 @@ for i, (title, rows, ks) in enumerate(panels):
     a.set_xticklabels([f"K={k_lo}\nchannel only", f"K={k_hi}\nhorizon x channel"], fontsize=8)
     a.set_ylim(.40, .95)
     a.set_ylabel("mean worst-cell coverage" if i == 0 else "")
-    a.legend(fontsize=7, loc="lower left")
     ds, da = static[1] - static[0], adapt[1] - adapt[0]
     a.set_title(f"{title}\nhorizon axis: static {ds:+.4f}, adaptive {da:+.4f}", fontsize=8.5)
 
-f.suptitle("Adding the horizon axis hurts without adaptation and helps with it "
+# one shared legend, below the axes, so it cannot sit on top of a bar
+h, lb = ax[0].get_legend_handles_labels()
+f.legend(h, lb, fontsize=8, ncol=2, loc="lower center", bbox_to_anchor=(.5, -.06),
+         frameon=False)
+f.suptitle("The horizon axis without adaptation and with it "
            "(fixed scoring grid, target 90%)", fontsize=9.5)
 f.tight_layout()
 f.savefig(f"{OUT}_horizon_interaction.png", bbox_inches="tight")
