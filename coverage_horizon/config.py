@@ -30,6 +30,14 @@ SPLITS = {
 DATASETS = ["ETTh1", "ETTh2", "ETTm1", "ETTm2"]
 HORIZONS = [96, 192, 336, 720]
 
+# --- S5 case-study surface (decision D006) ---------------------------------
+# The LTSF Electricity set, hourly, as standardised by the LSTNet release.
+# One calibration window start per day, matching the ETTh stride rule (F3).
+ECL_FILE = "electricity.txt"
+ECL_METERS = 50            # meters kept by the screening rule in data/electricity.py
+ECL_SPLIT_FRAC = (0.7, 0.8)  # sequential 70 / 10 / 20 on rows
+ECL_STRIDE = 24
+
 # Where the raw ETT CSVs live. Overridden by download_data.py; kept relative
 # so the repo is portable.
 import os
