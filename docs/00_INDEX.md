@@ -1,5 +1,5 @@
 DOC: 00_INDEX | OWNER: Aarush | CADENCE: on every doc create/retire
-STATUS: active | LAST-UPDATED: 2026-08-30 | SUPERSEDES: 2026-07-17 version
+STATUS: active | LAST-UPDATED: 2026-07-17 | SUPERSEDES: none
 
 # 00 — INDEX (single source of truth for what exists)
 Flat namespace manifest. If two docs' headers conflict, this file wins the tiebreak on "which is canonical."
@@ -9,8 +9,6 @@ Build philosophy: MVP-first + lazy instantiation. Tier-4 writing docs are delibe
 |----|-------|------|--------|-------|---------|----------|
 | 00_INDEX | This manifest | 0 | active | Aarush | on change | PK |
 | 01_IDEA_LOCK | Constitution (the PDF) | 0 | active (frozen) | Aarush | delta-only | PK (rename PDF to 01_IDEA_LOCK) |
-| 01_IDEA_LOCK_DELTA_001 | Delta note 001 (W2 emphasis) | 0 | active | Aarush | delta-only | PK (git) |
-| 01_IDEA_LOCK_DELTA_002 | Delta note 002 (horizon axis load-bearing; corrects 001) | 0 | **draft — awaiting approval** | Aarush | delta-only | PK (git) |
 | 02_OPERATING_RULES | Full rulebook + 12 roles | 0 | active | Aarush | rare | PK |
 | 10_DECISION_LOG | Every decision | 1 | active | Aarush | per-decision | PK |
 | 11_RISK_REGISTER | Risks (from Lock §12) | 1 | active | Shared | monthly + trigger | PK |

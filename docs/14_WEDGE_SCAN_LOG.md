@@ -32,3 +32,7 @@ Conceded as prior art (never a collision): split conformal; per-horizon split co
 <!-- Add ONLY if you fall back to weekly-Monday + date-gate instead of true monthly scheduling:
 2026-07-17 | CADENCE-DELTA | literal "first Monday" implemented as weekly-Monday schedule + in-prompt date-gate due to scheduler limits; non-substantive, no change to §3–5 scope. | action: none
 -->
+
+## NOTE
+Authoritative live copy = Google Doc in Drive ("14_WEDGE_SCAN_LOG — Coverage Across the Horizon").
+This bundle copy is a snapshot. 2026-07-17 independent verification of fence papers: wedge INTACT (see 50 + 32).

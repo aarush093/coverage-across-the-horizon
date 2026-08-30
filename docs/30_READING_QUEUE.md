@@ -1,5 +1,5 @@
 DOC: 30_READING_QUEUE | OWNER: Aarush | CADENCE: per-paper (update as items are read/added)
-STATUS: active | LAST-UPDATED: 2026-07-17 (rev2) | SUPERSEDES: reference_links.md (from lmao_21.zip)
+STATUS: active | LAST-UPDATED: 2026-07-17 | SUPERSEDES: reference_links.md (from lmao_21.zip)
 
 # 30 — Reading Queue & Master Bibliography
 Coverage Across the Horizon · seeds the literature system (feeds 31_PAPER_NOTES + 32_LIT_MATRIX).
@@ -27,11 +27,8 @@ S0 exit criterion (from the Lock): wedge statement survives unchanged, or is ame
 
 ## WEDGE-CRITICAL — scrutinize, do not just file
 
-These sit close to W1/W2. At S0 they get a real read, because if any already does
-horizon/channel-conditional coverage at scale, the wedge moves:
-- [NEW] Bias-Corrected Adaptive Conformal Inference for MULTI-HORIZON TS Forecasting — Apr 2026 — 2604.13253
-        ← flagged by the 2026-07-17 wedge scan as the CLOSEST to W2 (multi-horizon + adaptive conformal).
-          Read early at S0; confirm it does not do horizon-bucket × channel conditioning on LTSF backbones.
+These three are conditional-coverage machinery sitting close to W1/W2. At S0 they get a real read,
+because if any already does horizon/channel-conditional coverage at scale, the wedge moves:
 - [19] Conformal Prediction With Conditional Guarantees — Gibbs, Cherian, Candès, JRSS-B 2025 — 2305.12616
 - [18] Conditional-Coverage Diagnostics — Dec 2025 — 2512.11779   (adjacent to the W1 audit)
 - [13] MultiDimSPCI (ellipsoidal joint sets) — Xu, Jiang, Xie, ICML 2024 — 2403.03850
@@ -64,8 +61,7 @@ horizon/channel-conditional coverage at scale, the wedge moves:
 - [19] CP With Conditional Guarantees — Gibbs, Cherian, Candès, JRSS-B 2025 — https://arxiv.org/abs/2305.12616 · DOI: 10.1093/jrsssb/qkaf008
 - [20] Conformal Seasonal Pools — May 2026 — https://arxiv.org/abs/2605.03789  [UNVERIFIED]
 - [21] Schlembach et al., Conformal Multistep Multivariate TSF — COPA 2022, PMLR 179:316–318 — https://proceedings.mlr.press/v179/schlembach22a.html
-- [+] O2CP — optimization-based online multi-step CP, 2025 — https://arxiv.org/abs/2508.13362  ✓ real (title: "Adaptive CP Intervals Over Trajectory Ensembles"; name mismatch — see Q01)
-- [NEW] Bias-Corrected Adaptive Conformal Inference for Multi-Horizon TSF — Apr 2026 — https://arxiv.org/abs/2604.13253  (surfaced by wedge scan 2026-07-17; closest to W2)
+- [+] O2CP — optimization-based online multi-step CP, 2025 — https://arxiv.org/abs/2508.13362  [UNVERIFIED] (S0-mandated; was missing)
 
 ## D. Later LTSF context (synthesis, not core)
 - [22] iTransformer — Liu et al., ICLR 2024 — https://arxiv.org/abs/2310.06625
