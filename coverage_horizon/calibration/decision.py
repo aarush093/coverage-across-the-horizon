@@ -60,10 +60,10 @@ def _rule_stats(peak, flag, ratio, n_peak):
     cost = ratio * fn + 1.0 * fp
     floor = ratio * n_peak                      # cost of never flagging
     return dict(
-        norm_cost=float(cost / floor) if floor > 0 else float("nan"),
+        norm_cost=float(cost / floor) if floor > 0 else None,  # undefined for a rule that flags nothing; None keeps the JSON strict-parseable (NaN literals broke jq/JS)
         raw_cost=float(cost),
-        recall=float(tp / n_peak) if n_peak > 0 else float("nan"),
-        precision=float(tp / (tp + fp)) if (tp + fp) > 0 else float("nan"),
+        recall=float(tp / n_peak) if n_peak > 0 else None,  # undefined for a rule that flags nothing; None keeps the JSON strict-parseable (NaN literals broke jq/JS)
+        precision=float(tp / (tp + fp)) if (tp + fp) > 0 else None,  # undefined for a rule that flags nothing; None keeps the JSON strict-parseable (NaN literals broke jq/JS)
         flag_rate=float((tp + fp) / peak.size),
         n_missed=fn, n_false_alarm=fp,
     )
