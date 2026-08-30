@@ -113,58 +113,49 @@ evidence was incomplete.
 
 ---
 
-## 4. Replication on Electricity — where the raw minimum says the opposite, and why it is wrong to believe it
+## 4. Replication on Electricity -- the horizon axis needs adaptation MORE on a wide grid
 
-The same sweep on the S5 surface (50 meters, 300-cell grid, K ∈ {1, 6}, 8 configs) does **not**
-reproduce §3 on worst-cell. Mean effect of the horizon axis: **−0.0034**, K=6 winning 4/8.
+Read on the adaptive arm alone, the same sweep on the S5 surface (50 meters, 300-cell
+grid, K in {1,6}, 8 configs) looks like a non-replication: mean effect **-0.0034**, K=6
+winning 4/8, split cleanly by horizon (K=1 wins at H<=192 by 0.035-0.046, K=6 wins at
+H>=336 by 0.030-0.036, identically for both backbones).
 
-Split by horizon, it is not noise. Both backbones agree at every horizon:
+**But the adaptive column is not the quantity this note is about.** Section 3 measures
+an interaction, and the interaction is LARGER here than on ETT:
 
-| H | K=1 | K=6 | effect |
-|---|-----|-----|--------|
-| 96 | 0.8310 | 0.7940 | **−0.0370** |
-| 192 | 0.8432 | 0.7995 | **−0.0436** |
-| 336 | 0.8410 | 0.8754 | **+0.0344** |
-| 720 | 0.8208 | 0.8533 | **+0.0325** |
+| | K=1 (channel only) | K=6 (horizon x channel) | effect |
+|---|---|---|---|
+| **static** (Cond) | 0.5473 | 0.4621 | **-0.0853** |
+| **adaptive** (Proposed) | 0.8340 | 0.8306 | **-0.0034** |
 
-At H ≤ 192 the horizon axis hurts; at H ≥ 336 it helps. Eight of eight configs follow that split.
+Horizon x adaptation interaction: **+0.0818 on Electricity, against +0.0603 on ETT.**
+Without adaptation, adding horizon buckets to a 300-cell grid costs 0.085 of worst-cell
+coverage. With adaptation, it costs nothing. The adaptation is doing more work here, not
+less, which is the opposite of a failed replication.
 
-**But worst-cell is the only metric that flips.** Every other statistic on the same runs favours K=6,
-at every horizon, on both surfaces:
+**Every other statistic also favours K=6, at every horizon.** Mean over 8 configs:
+worst-cell 0.8340 -> 0.8306, but cell_p05 0.8715 -> **0.8806**, within +/-5pt 0.625 ->
+**0.977**, width 0.9451 -> **0.9420**, Winkler 1.4220 -> **1.4083**. And cell_p05 does
+not flip with horizon the way the raw minimum does (+0.0094, +0.0084, +0.0103, +0.0086
+at H = 96, 192, 336, 720).
 
-| Electricity, mean of 8 | worst-cell (min) | cell_p05 | within ±5pt | width | Winkler |
-|---|---|---|---|---|---|
-| K=1 (channel only) | **0.8340** | 0.8715 | 0.625 | 0.9451 | 1.4220 |
-| K=6 (horizon × channel) | 0.8306 | **0.8806** | **0.977** | **0.9420** | **1.4083** |
+**The mechanism, measured.** The calibration-window ablation (EXP_S4_006) shows why. On
+Electricity, every baseline plateaus as calibration data grows -- Global gains only
++0.034 of worst-cell across a fourfold increase, MSCP +0.008 -- because their failure is
+structural. Proposed gains **+0.200** (0.6307 at n_cal=24 to 0.8306 at n_cal=96) and has
+still not saturated. Its failure is statistical: it is estimating a 300-cell grid from
+under a hundred paths. K=6 asks for six times as many cells as K=1, so wherever the
+block is thin the extra granularity costs more than it returns. That single mechanism
+accounts for this section, for Q13's horizon crossover, and for Q14's disagreement
+between the minimum and the distribution.
 
-And `cell_p05` does not flip with horizon the way the minimum does:
-
-| H | worst-cell effect | cell_p05 effect |
-|---|---|---|
-| 96 | −0.0370 | **+0.0094** |
-| 192 | −0.0436 | **+0.0084** |
-| 336 | +0.0344 | **+0.0103** |
-| 720 | +0.0325 | **+0.0086** |
-
-**Reading.** `worst_ref` is a single order statistic — the minimum over 300 cells on Electricity
-versus 42 on ETT. Going from K=1 to K=6 multiplies the cell count by six (50 → 300, 7 → 42), so the
-minimum is drawn from six times as many estimates and falls for reasons that have nothing to do with
-calibration quality. On the narrow ETT grid that cost is small enough that the benefit dominates
-everywhere. On the wide Electricity grid it dominates the benefit at short horizons, where there is
-less horizon heterogeneity to capture in the first place, and is overtaken at long horizons where
-there is more.
-
-This is exactly the failure mode **D009** was adopted to prevent, one day before it occurred: a
-minimum over a wide grid is not comparable to a minimum over a narrow one, and the distribution must
-be reported alongside it. Had this note been written on `worst_ref` alone — as the 3276bbf draft was,
-before this arm had run — it would have recorded a contradiction that does not exist.
-
-**Honest statement of the finding.** The horizon axis improves calibration on both surfaces, at every
-horizon, on every distributional statistic. On the raw minimum over a wide grid it appears to hurt at
-short horizons, and that appearance is an artefact of the statistic, not a property of the method.
-The stronger claim in §3 ("+0.0394, 31/32") is **an ETT result and must be labelled as one**.
-
----
+**Honest statement.** The horizon axis improves calibration on both surfaces and at
+every horizon on every distributional statistic. On the raw minimum over a wide grid it
+appears to hurt at short horizons; that appearance is a sample-size artefact of the
+statistic, not a property of the method. This is exactly the failure mode **D009** was
+adopted to prevent, one day before it occurred. Section 3's headline (+0.0394, 31/32)
+is **an ETT result and must be labelled as one**; the interaction, which is the claim,
+replicates and strengthens.
 
 ## 5. Consequence for the wedge — W1–W4 UNCHANGED, C1–C4 UNCHANGED
 
