@@ -1,0 +1,55 @@
+{
+ "ett_interaction": 0.12912500000000005,
+ "ett": {
+  "Gaussian": {
+   "marginal": 0.909634375,
+   "worst_cell": 0.776240625,
+   "width": 2.02540625,
+   "winkler": 2.68036875,
+   "joint": 0.0044687500000000005
+  },
+  "Global": {
+   "marginal": 0.909721875,
+   "worst_cell": 0.766725,
+   "width": 2.08568125,
+   "winkler": 2.942153125,
+   "joint": 0.003390625
+  },
+  "MSCP": {
+   "marginal": 0.912340625,
+   "worst_cell": 0.725103125,
+   "width": 2.039196875,
+   "winkler": 2.76494375,
+   "joint": 0.001834375
+  },
+  "CondC": {
+   "marginal": 0.909890625,
+   "worst_cell": 0.779675,
+   "width": 2.17111875,
+   "winkler": 2.980621875,
+   "joint": 0.00339375
+  },
+  "Cond": {
+   "marginal": 0.908396875,
+   "worst_cell": 0.75883125,
+   "width": 2.130359375,
+   "winkler": 2.909525,
+   "joint": 0.0010406249999999999
+  },
+  "ACI": {
+   "marginal": 0.90309375,
+   "worst_cell": 0.74450625,
+   "width": 1.87421875,
+   "winkler": 2.83095625,
+   "joint": 0.001571875
+  },
+  "Proposed": {
+   "marginal": 0.9097625,
+   "worst_cell": 0.8657375,
+   "width": 1.924475,
+   "winkler": 2.636634375,
+   "joint": 0.00051875
+  }
+ },
+ "ecl_interaction": 0.32639981154570846
+}
