@@ -113,3 +113,17 @@ Source: `results/cw_ett.json`, `results/cw_ecl.json`. Block truncated from the f
 | _n_cal_ | 28 | 56 | 84 | 112 |
 
 MaxScore whole-path coverage: 25% -> 0.6978, 50% -> 0.8130, 75% -> 0.8860, 100% -> 0.8772
+
+**Electricity** -- worst-cell by calibration fraction
+
+| method | 25% | 50% | 75% | 100% |
+| --- | --- | --- | --- | --- |
+| Global | 0.5421 | 0.5544 | 0.5558 | 0.5757 |
+| MSCP | 0.5304 | 0.5354 | 0.5336 | 0.5382 |
+| CondC | 0.5008 | 0.5278 | 0.5273 | 0.5473 |
+| Cond | 0.4510 | 0.3877 | 0.4043 | 0.4621 |
+| ACI | 0.5898 | 0.5938 | 0.5993 | 0.6177 |
+| Proposed | 0.6307 | 0.7084 | 0.7963 | 0.8306 |
+| _n_cal_ | 24 | 48 | 72 | 96 |
+
+MaxScore whole-path coverage: 25% -> 0.7718, 50% -> 0.7627, 75% -> 0.7937, 100% -> 0.9124
