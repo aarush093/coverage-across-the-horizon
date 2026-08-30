@@ -1,5 +1,5 @@
 DOC: 01_IDEA_LOCK_DELTA_001 | OWNER: Aarush | CADENCE: delta-only
-STATUS: active | LAST-UPDATED: 2026-08-16 | SUPERSEDES: none (amends 01_IDEA_LOCK v1.0 §3–§5 emphasis only)
+STATUS: CORRECTED-BY 01_IDEA_LOCK_DELTA_002 (2026-08-30) on the "never crosses 0.90" claim and on scope-of-evidence (DLinear-only figures); its periodicity finding stands re-verified. Original text preserved unedited below. Original  active | LAST-UPDATED: 2026-08-16 | SUPERSEDES: none (amends 01_IDEA_LOCK v1.0 §3–§5 emphasis only)
 
 # DELTA NOTE 001 — evidence-driven re-weighting inside W2
 Raised by: S2 decision-gate execution, 2026-08-16 (pulled forward from late Sep).

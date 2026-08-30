@@ -1,5 +1,5 @@
 DOC: 32_LIT_MATRIX | OWNER: Shared | CADENCE: per-paper
-STATUS: seeded | LAST-UPDATED: 2026-07-17 | SUPERSEDES: none
+STATUS: seeded | LAST-UPDATED: 2026-08-30 | SUPERSEDES: none
 
 # 32 — LITERATURE MATRIX (the connected graph)
 Seeded from Idea Lock §4 fence table + 2026-07-17 verification pass. Collision = occupies a CLAIMED wedge component.
@@ -28,3 +28,15 @@ Seeded from Idea Lock §4 fence table + 2026-07-17 verification pass. Collision 
 | TimeXer | 2402.19072 | (pre-cutoff) | out-of-scope | — | architecture, not calibration |
 
 WEDGE VERDICT (2026-07-17): INTACT. No paper occupies W1–W4.
+
+## Added 2026-08-30 (S0 pass + out-of-cycle wedge scan)
+| Paper | Status | Wedge | Note |
+|---|---|---|---|
+| 2601.18509 CP-for-TS benchmark (Sabashvili) | READ -- LIT_2601.18509 | W1: no (Q05 closed) | AutoARIMA/monthly-sales/marginal-only; concludes MSCP best. Our foil: MSCP tops marginal (0.9123), bottoms worst-cell (0.7251). |
+| 2604.13253 BC-ACI (Lade et al.) | READ (abstract/intro) -- LIT_2604.13253 | W2: no (Q08 closed) | Moves interval centre; we condition width. Spawned EXP_S4_008: bias present, not persistent. |
+| 2508.13362 O2CP (Li et al.) | READ (partial) -- LIT_2508.13362 | W3: no (Q01 closed) | Retitled v1->v2; cite v2. Q02 (conclusion sentence) still unverified. |
+| 2607.23165 ABF-T-GLCP | QUEUED, TOP PRIORITY | W2: no on abstract -- **new nearest neighbour** | [UNVERIFIED] beyond abstract. |
+| 2507.20941 Multivariate Standardized Residuals | QUEUED | none | Channel-axis conditioning in multivariate regression. |
+| 2607.11470 climate-invariant group-conditional CP | QUEUED | none | Group x horizon in energy. |
+| 2509.02844 CPTC change points | QUEUED | none | For the shift/traces section. |
+| 2511.13608 gentle introduction | QUEUED | none | Framing. |

@@ -1,5 +1,5 @@
 DOC: 00_INDEX | OWNER: Aarush | CADENCE: on every doc create/retire
-STATUS: active | LAST-UPDATED: 2026-07-17 | SUPERSEDES: none
+STATUS: active | LAST-UPDATED: 2026-08-30 | SUPERSEDES: none
 
 # 00 — INDEX (single source of truth for what exists)
 Flat namespace manifest. If two docs' headers conflict, this file wins the tiebreak on "which is canonical."
@@ -34,3 +34,15 @@ Build philosophy: MVP-first + lazy instantiation. Tier-4 writing docs are delibe
 - Most docs: chat-Project Knowledge (PK) — you upload the .md files.
 - 14_WEDGE_SCAN_LOG: Google Drive — so the Cowork scheduled task can auto-append. (Already created.)
 - Code + real version control: git (github/aarush093) — NOT Claude. PK holds distilled notes only, never raw PDFs.
+
+## Documents added since 2026-07-17
+| Doc | Role |
+|---|---|
+| 01_IDEA_LOCK_DELTA_001 / _002 | Evidence deltas against the Lock. DELTA_002 (draft) corrects DELTA_001 and reframes the horizon axis. |
+| S0_POSITIONING_NOTE | Prior-art fence re-verified 2026-08-30; wedge INTACT; partial (2 close reads pending). |
+| LIT_2601.18509 / LIT_2604.13253 / LIT_2508.13362 | Standard-schema literature notes. |
+| SESSION_REPORT | 2026-08-30 autonomous-agent session report (pre-FR06 IDs; see its header for the mapping). |
+| results/SUMMARY.md | GENERATED results summary -- regenerate before quoting any number (`scripts/make_summary.py`). |
+| scripts/audit_docs.py | Doc/claim integrity gate; run before any doc commit. |
+NOTE: the Idea Lock itself (v1.1) lives as a PDF outside git because `.gitignore` excludes `*.pdf`.
+Recommended: `git add -f docs/Coverage_Across_the_Horizon_Idea_Lock_v1_1.pdf` so the constitution is versioned with everything it governs.

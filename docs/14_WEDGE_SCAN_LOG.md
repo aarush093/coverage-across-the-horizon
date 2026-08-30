@@ -1,5 +1,5 @@
 DOC: 14_WEDGE_SCAN_LOG | OWNER: Aarush (scan executed by scheduled task) | CADENCE: monthly, first Monday
-STATUS: active | LAST-UPDATED: 2026-07-17 | SUPERSEDES: none
+STATUS: active | LAST-UPDATED: 2026-08-30 | SUPERSEDES: none
 
 # 14 — Wedge-Collision Scan Log
 Idea Lock Change-Control standing rule: on the first Monday of each month, re-run the wedge-collision
@@ -36,3 +36,14 @@ Conceded as prior art (never a collision): split conformal; per-horizon split co
 ## NOTE
 Authoritative live copy = Google Doc in Drive ("14_WEDGE_SCAN_LOG — Coverage Across the Horizon").
 This bundle copy is a snapshot. 2026-07-17 independent verification of fence papers: wedge INTACT (see 50 + 32).
+
+## SCAN 2026-08-30 (out-of-cycle; the 2026-08-03 first-Monday scan never ran -- Q15)
+Queries: CP + LTSF + conditional coverage; CP multivariate per-channel / worst-case; 2607/2608 window.
+| Found | Verdict |
+|---|---|
+| **2607.23165** ABF-T-GLCP, Gate-Localized Conformal Prediction (25 Jul 2026) | **NEW NEAREST NEIGHBOUR to W2 -- closer than BC-ACI.** Multivariate, nonstationary, horizon-specific experts, calibration coupled to a learned gate state. Does NOT occupy: it trains its own forecasting module (not post-hoc on frozen standard backbones), selects residuals by learned representation rather than conditioning a quantile on horizon-bucket x channel, and its guarantee is "approximate local coverage under stability conditions", not distribution-free/ACI long-run. **[UNVERIFIED beyond abstract -- close read is now the top S0 item.]** |
+| 2507.20941 Braun/Berta/Jordan/Bach, Multivariate Standardized Residuals for CP | Conditional coverage across output dimensions via whitening/Mahalanobis. Regression, not time series, not online. Related Work for the channel axis. |
+| 2607.11470 climate-invariant group-conditional CP for solar/wind | Group-conditional x multi-horizon in energy. Trains XGBoost ensemble; groups are sites, not channels; 1-12h horizons; no online adaptation. Related Work. |
+| 2509.02844 CPTC (Sun & Yu), CP with change points | Directly relevant to the traces/shift section (MET02). Related Work. |
+| 2511.13608 gentle-introduction survey | Related Work framing citation. |
+**Wedge verdict: W1-W4 INTACT.** R1 downgraded from "unmonitored since 17 Jul" to "monitored; one close read pending".

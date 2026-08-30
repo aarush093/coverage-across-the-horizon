@@ -1,3 +1,7 @@
+> **ID-MAPPING NOTE (added 2026-08-30, FR06).** This report predates the register merge. Read its
+> D006->D011, D007->D012, D008->D013, D009->D014 and Q07-Q18 -> Q12-Q23 (Q13->Q18, Q14->Q19).
+> RV and FR ids are unchanged. Text below is preserved as written.
+
 DOC: SESSION_REPORT | OWNER: Aarush | CADENCE: per-autonomous-session
 STATUS: active | LAST-UPDATED: 2026-08-30 | SUPERSEDES: none
 

@@ -1,5 +1,5 @@
 DOC: 30_READING_QUEUE | OWNER: Aarush | CADENCE: per-paper (update as items are read/added)
-STATUS: active | LAST-UPDATED: 2026-07-17 | SUPERSEDES: reference_links.md (from lmao_21.zip)
+STATUS: active | LAST-UPDATED: 2026-08-30 | SUPERSEDES: reference_links.md (from lmao_21.zip)
 
 # 30 — Reading Queue & Master Bibliography
 Coverage Across the Horizon · seeds the literature system (feeds 31_PAPER_NOTES + 32_LIT_MATRIX).
@@ -90,3 +90,9 @@ because if any already does horizon/channel-conditional coverage at scale, the w
 - Dataset scope of [8] — confirm on close read (overlap with our wedge?).
 - Venues of record for [9], [11] — final venues to confirm.
 - All 2503+ IDs marked [UNVERIFIED] — resolve in the S0 web pass.
+
+## Queue update 2026-08-30
+1. **2607.23165 ABF-T-GLCP -- read next, before any submission.** New nearest neighbour to W2 from the 2026-08-30 scan; verify from the full text that the calibration layer is representation-coupled (not post-hoc) and that no worst-cell audit appears.
+2. 2508.13362 v2, Conclusion section only -- settle Q02 (the one remaining unverified load-bearing Lock citation).
+3. 2410.13115 AcMCP + 2307.16895 Conformal PID -- the two mandated S0 close reads not yet done.
+4. 2507.20941, 2607.11470, 2509.02844, 2511.13608 -- Related Work breadth.
