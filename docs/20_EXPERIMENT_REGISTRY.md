@@ -1,5 +1,5 @@
 DOC: 20_EXPERIMENT_REGISTRY | OWNER: Aarush | CADENCE: per-experiment
-STATUS: active | LAST-UPDATED: 2026-08-30 (rev2) | SUPERSEDES: rev1 (2026-08-30)
+STATUS: active | LAST-UPDATED: 2026-08-30 (rev2) (rev2) | SUPERSEDES: rev1 (2026-08-30)
 
 # 20 — EXPERIMENT REGISTRY
 Rule: a stage exit criterion is NOT met until its rows are filled.
@@ -37,3 +37,8 @@ never be compared across K. [FACT, 2026-08-30]
 | EXP_S5_006 | decision-level value (W4/MET08) | cost sweep, 5 ratios | at miss:FA = 10, mean normalised cost Point **0.362** → Global 0.175 → Proposed **0.167**; recall 0.663 → 0.949 → 0.964. Proposed cheaper than Global in **8/8** configs. **At ratio 2 the point forecast wins (0.463 vs 0.692).** | ✓ **conditional** result, both directions reported |
 | EXP_S5_007 | worst-channel decision cost | same | Point 1.00 · Global 2.04 · Proposed **2.35** at ratio 10 — both interval rules are worse than doing nothing on the worst meter, and Proposed is the worst of the three | ✓ **negative result** (RV13) |
 | **EXP_S5_008** | **does the EXP_S4_007 horizon interaction survive the wide surface?** | K ∈ {1,6} × Cond/Proposed, 8 configs, fixed K=6 grid | **Static replicates and is worse: 0.5473→0.4621 (−0.0853)** vs −0.0209 on ETT. **Adaptive does NOT replicate: 0.8340→0.8306 (−0.0034), sign test 4/8.** The mean hides a clean, backbone-consistent **horizon reversal** — K=1 wins at H=96/192 (0.8287·0.8408·0.8333·0.8455 vs 0.7940·0.7995·0.7940·0.7995), K=6 wins at H=336/720 (0.8392·0.8349·0.8427·0.8066 vs 0.8754·0.8649·0.8754·0.8417), 4/4 each way. **But every distributional metric prefers K=6**: within ±5pt **0.625→0.977**, cell_p05 0.8715→0.8806, Winkler 1.4220→**1.4083**, width 0.9451→0.9420. Worst-cell alone is a wash; D009 is exactly why. All six K=6 methods reproduce `casestudy.json` **exactly** (diff 0.000000). | ✓ **partial replication — report the reversal, do not average it away** (Q13) |
+
+## Diagnostics against anticipated attacks
+| ID | Question | Method | Key result | Status |
+|----|----------|--------|------------|--------|
+| EXP_S4_008 | Do symmetric intervals pay the bias overhead BC-ACI describes? (RV16 / Q15) | per-cell residual mean, estimated on the calibration block only, then a leakage-free re-centring through the existing layer | Bias present (mean |b| = 10.4% of width on ETT, 3.9% on Electricity) but **not persistent** (r = +0.267 / +0.068, sign agreement 0.653 / 0.512). Re-centring buys −1.52% width on ETT and **costs** width and coverage on Electricity (worst-cell 0.8306 → 0.8208). | ✓ **negative result, and a useful one** — closes RV16 with a measurement rather than an argument |
