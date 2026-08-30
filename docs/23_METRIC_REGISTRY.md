@@ -1,11 +1,11 @@
 DOC: 23_METRIC_REGISTRY | OWNER: Aarush | CADENCE: rare
-STATUS: active | LAST-UPDATED: 2026-08-30 | SUPERSEDES: 2026-07-17 seed
+STATUS: active | LAST-UPDATED: 2026-08-30 (rev2) | SUPERSEDES: 2026-07-17 seed
 
 # 23 — METRIC REGISTRY (exact definitions so numbers stay comparable across sessions)
 | ID | Metric | Definition / note | Reported as |
 |----|--------|-------------------|-------------|
 | MET01 | Coverage error | empirical minus target | MEAN and WORST-CELL over the horizon-bucket × channel grid (worst-cell mandatory) |
-| MET02 | Rolling coverage trace | coverage over sliding test windows | per nonstationary segment — **NOT YET PRODUCED**, lost with FR01 |
+| MET02 | Rolling coverage trace | coverage of each test path in time order, then a trailing rolling mean over a window of paths (default 30; paths are one per day) | **PRODUCED 2026-08-30** -- `scripts/run_traces.py`, `results/tr_ecl.json` + `tr_ett.json`. Reported as worst window, fraction of the test period below 0.85, longest consecutive dip, and where in the block the worst window falls. Traces Global / ACI / Proposed so adaptation is isolated. |
 | MET03 | Normalized interval width | width / scale | vs horizon step |
 | MET04 | Winkler / interval score | width + (2/α)·shortfall on misses | per method. The answer to "you just widened the intervals" |
 | MET05 | Quantile (pinball) loss | for quantile-head baselines | not run (no trained baselines in the contracted MVP) |

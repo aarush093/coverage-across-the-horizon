@@ -1,5 +1,5 @@
 DOC: 12_PROGRESS_TRACKER | OWNER: Aarush | CADENCE: weekly
-STATUS: active | LAST-UPDATED: 2026-08-30 (rev2) | SUPERSEDES: rev1 (2026-08-30)
+STATUS: active | LAST-UPDATED: 2026-08-30 (rev3) | SUPERSEDES: rev1 (2026-08-30)
 
 # 12 — PROGRESS TRACKER (stages from Idea Lock §8)
 Current phase: **S5 complete and reproducible. S4 advanced but still partial. S0 still never exited.**
@@ -11,7 +11,7 @@ Current phase: **S5 complete and reproducible. S4 advanced but still partial. S0
 | S1 | Reproduction | MSE within ~5% of published | **DONE, DEVIATED** — 32 ETT point fits + 8 Electricity fits. DLinear+NLinear, not DLinear+PatchTST (D007). MSE-vs-published Δ still [UNVERIFIED] for ETT; Electricity is a screened 50-meter subset and is **not** comparable to published 321-channel numbers. |
 | S2 | Audit + DECISION GATE | gate resolved | **DONE** — method-led. Confirmed twice: ETT pooled marginal 0.910 vs worst-cell 0.767; Electricity 0.864 vs 0.576. |
 | S3 | Method | beats baselines on worst-cell | **DONE** — ETT 0.8657 vs best baseline 0.7797. Electricity 0.8306 vs 0.5757. |
-| S4 | Shift & robustness | ablation table complete | **PARTIAL, ADVANCED 2026-08-30** — K, γ, scale, stride ablations in `results.json`. **New: horizon-bucket ablation on a fixed scoring grid, both surfaces (EXP_S4_007 32 configs, EXP_S5_008 8 configs), `horizon_ablation.json` + `ha_ecl.json`.** It found a second interaction (horizon × adaptation, +0.0603 on ETT, sign test 31/32) and a scoring confound in the old `kabl` block that **reversed** its conclusion (FR04). Also corrected a false claim in DELTA_001 (DELTA_002, draft — **needs your approval**). Still missing: rolling coverage traces (MET02) and the calibration-window ablation, both lost with the container (FR01) and **not** rebuilt. |
+| S4 | Shift & robustness | ablation table complete | **COMPLETE 2026-08-30.** K, gamma, scale, stride ablations in `results.json`; horizon-bucket ablation on a fixed scoring grid, both surfaces (EXP_S4_007 / EXP_S5_008); bias diagnostic (EXP_S4_008); **rolling coverage traces (MET02 / EXP_S4_005) and the calibration-window ablation (EXP_S4_006) both rebuilt** -- the last two things FR01 destroyed. EXP_S4_006 also settled Q11. Nothing from FR01 is now outstanding. |
 | S5 | Energy case study | decision-level result exists either way | **DONE** — `results/casestudy.json`, committed `481b90f`. 2 backbones × 4 horizons on Electricity, 300-cell grid, seasonal split. Ran 474 s on the author's machine; W4 answered in both directions (see 20, 43). |
 | S6 | Write & release | arXiv preprint live + code; 2 CFPs | NOT STARTED |
 
