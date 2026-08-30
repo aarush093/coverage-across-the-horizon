@@ -65,7 +65,7 @@ averaging hides them, which is why the aggregated view was reassuring and wrong.
 | ACI | 0.731 | **0.7307** | 0.7445 |
 | Proposed | 0.866 | **0.8664** | 0.8657 |
 
-Neither set is wrong. DELTA_001 was written 2026-08-16, before the NLinear arm existed (D007); it
+Neither set is wrong. DELTA_001 was written 2026-08-16, before the NLinear arm existed (D012); it
 simply predates it. Papers and tables must quote the two-backbone column, and DELTA_001's numbers
 should be labelled as a DLinear slice wherever they are reused.
 
@@ -146,13 +146,13 @@ structural. Proposed gains **+0.200** (0.6307 at n_cal=24 to 0.8306 at n_cal=96)
 still not saturated. Its failure is statistical: it is estimating a 300-cell grid from
 under a hundred paths. K=6 asks for six times as many cells as K=1, so wherever the
 block is thin the extra granularity costs more than it returns. That single mechanism
-accounts for this section, for Q13's horizon crossover, and for Q14's disagreement
+accounts for this section, for Q18's horizon crossover, and for Q19's disagreement
 between the minimum and the distribution.
 
 **Honest statement.** The horizon axis improves calibration on both surfaces and at
 every horizon on every distributional statistic. On the raw minimum over a wide grid it
 appears to hurt at short horizons; that appearance is a sample-size artefact of the
-statistic, not a property of the method. This is exactly the failure mode **D009** was
+statistic, not a property of the method. This is exactly the failure mode **D014** was
 adopted to prevent, one day before it occurred. Section 3's headline (+0.0394, 31/32)
 is **an ETT result and must be labelled as one**; the interaction, which is the claim,
 replicates and strengthens.

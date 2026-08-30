@@ -5,7 +5,7 @@ STATUS: active | LAST-UPDATED: 2026-08-29 | SUPERSEDES: 2026-07-17 seed
 | ID | Backbone | Role | Impl | Seed | Status |
 |----|----------|------|------|------|--------|
 | M01 | DLinear | anchor P2 | own closed-form least squares, `coverage_horizon/backbone.py` | 2026 | **USED** — 16 fits |
-| M02 | NLinear | second backbone (model-agnosticism evidence) | same module | 2026 | **USED** — 16 fits. **Not in the Idea Lock.** Substituted for PatchTST without an authorised delta — see D007. |
+| M02 | NLinear | second backbone (model-agnosticism evidence) | same module | 2026 | **USED** — 16 fits. **Not in the Idea Lock.** Substituted for PatchTST without an authorised delta — see D012. |
 | M03 | PatchTST | anchor P3, Lock-mandated | yuqinie98/PatchTST | — | **NOT RUN.** Dropping it was not what R5 authorised. |
 | M04 | Informer | anchor P1 | TSLib | — | NOT RUN (R5 permits) |
 | REF | Chronos | uncalibrated zero-shot reference only | arXiv 2403.07815 | n/a | NOT RUN |

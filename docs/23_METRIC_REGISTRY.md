@@ -13,7 +13,7 @@ STATUS: active | LAST-UPDATED: 2026-08-30 (rev2) | SUPERSEDES: 2026-07-17 seed
 | MET07 | Calibration wall-clock overhead | per-step cost of the layer | O(1) claim evidence — **not yet measured** |
 | MET08 | Decision cost / regret | interval-gated peak flagging, normalised so "flag nothing" = 1.0 | swept over miss:false-alarm ∈ {2,5,10,20,50}, never a single chosen ratio |
 | **MET09** | **cell_p05** | 5th percentile of the per-cell coverage grid | alongside the minimum. A minimum is one order statistic; over 300 cells it is far noisier than over 42 |
-| **MET10** | **frac_within_5pt** | fraction of cells within ±0.05 of target | the primary wide-grid summary (D009) |
+| **MET10** | **frac_within_5pt** | fraction of cells within ±0.05 of target | the primary wide-grid summary (D014) |
 | **MET11** | **frac_below_80** | fraction of cells under 0.80 coverage | the tail statistic — how many cells are badly broken, not just the single worst |
 | **MET12** | **worst-channel decision cost** | highest per-channel normalised decision cost | the decision analogue of worst-cell coverage; a good mean can hide one meter absorbing every miss |
 
