@@ -11,3 +11,7 @@ data/*.csv
 env/
 data/*.txt
 data/*.gz
+
+paper/*.aux
+paper/*.log
+paper/*.out
