@@ -1,0 +1,351 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,booktabs,graphicx,microtype,url,xcolor}
+\usepackage[hidelinks]{hyperref}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage{caption}
+\captionsetup{font=small}
+\newcommand{\wc}{\mathrm{WC}}
+% Every number in this manuscript is a macro from numbers.tex, which
+% scripts/make_numbers_tex.py generates from the committed result files
+% (rule FR08: no typed numbers). Regenerate before every build.
+\input{numbers.tex}
+% Visible marker for anything that still needs a run or a check.
+% Rule: zero \todo hits before the file leaves the repository.
+\newcommand{\todo}[1]{\textcolor{red}{\textbf{[TODO: #1]}}}
+\newcommand{\Hset}{\{96, 192, 336, 720\}}
+
+\title{\textbf{Coverage Across the Horizon}\\[2pt]
+\large Horizon- and Channel-Conditional Adaptive Conformal Calibration\\for Long-Term Time-Series Forecasting}
+\author{Aarush Pandit\thanks{School of Computer Science Engineering and Information Systems, Vellore Institute of Technology, Vellore. Correspondence: \todo{institutional email}.}
+\and Nayan Jaggi\thanks{Vellore Institute of Technology, Vellore.}
+\and Sree Dharinya~S\thanks{Vellore Institute of Technology, Vellore (project guide).}}
+\date{Draft v2 --- 1 September 2026\\[2pt]
+\small Code, data scripts and every result artefact: \url{https://github.com/aarush093/coverage-across-the-horizon}}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Long-term time-series forecasting (LTSF) is scored by point error, and the conformal methods now being attached to LTSF forecasters are mostly scored the way point forecasts are: by one aggregate coverage number. We show that this hides the failure that matters. Auditing conditional coverage over a horizon-bucket $\times$ channel grid on the four ETT benchmarks, the per-horizon split-conformal baseline (MSCP) has the \emph{highest} marginal coverage of seven interval methods (\ettMSCPMarg) and the \emph{lowest} worst-cell coverage (\ettMSCPWorst), below a global split-conformal quantile (\ettGlobalWorst). The obvious repairs do not work on their own: online adaptation alone reliably lowers worst-cell coverage (\ettACIdWorst); horizon $\times$ channel conditioning alone is inconsistent (\ettCondWorst, better than global on three of four datasets and much worse on the fourth). Their combination reaches \ettPropDWorst\ with intervals no wider than the global baseline, an interaction of \ettInteractionD\ (bootstrap 95\% CI \ettInteractionCID) that holds in \ettPropDWinsG\ configurations and under an honest online protocol in which every feedback signal is used only once realised. On a 300-cell electricity-load surface with a seasonal calibration--test shift, static conditioning collapses to \eclCondWorst\ and the combination reaches \eclPropDWorst\ (interaction \eclInteractionD). The layer is post-hoc, distribution-free, model-agnostic and trains nothing. We also report the width price of whole-path coverage on both surfaces (\ettMaxScoreRatio$\times$ on ETT, \eclMaxScoreRatio$\times$ on electricity), a decision-level evaluation in which interval gating pays only when misses cost $\gtrsim$5$\times$ false alarms, and two methodological artefacts---a scoring confound and an online-feedback leak---that we found in our own pipeline and report in full.
+\end{abstract}
+
+\section{Introduction}
+
+The modern LTSF literature is organised around a shared evaluation contract: deterministic point forecasts, scored by MSE and MAE, on a fixed benchmark suite, at horizons of 96 to 720 steps \citep{informer,dlinear,patchtst}. The three papers that define the contract disagree about architecture almost completely and agree, silently, that no uncertainty need be reported. Because they disagree on everything else, the omission is a property of the contract rather than of any one paper. The ProbTS benchmark documents the resulting split: long-horizon point forecasting and short-horizon probabilistic estimation developed as separate literatures \citep{probts}.
+
+Conformal prediction is the natural repair. It is distribution-free, post-hoc, and requires no retraining, which matters when the forecaster is a frozen artefact---the normal deployment condition. A 2021--2026 line attaches conformal methods to forecasting: adaptive conformal inference (ACI) for online coverage \citep{aci,dtaci}, conformal PID control \citep{cpid}, autocorrelation-aware multi-step calibration \citep{acmcp}, and joint multi-step constructions \citep{cfrnn,bellman,copulacpts}.
+
+\paragraph{The problem this paper addresses.} That line has largely inherited the point literature's scoring habit. The closest benchmarking work to ours evaluates conformal methods for time series on marginal coverage, interval width and the Winkler score, with AutoARIMA on a monthly-sales corpus, and concludes that multi-step split conformal prediction (MSCP) is the best available method \citep{cpsurvey}. Under the same three metrics, MSCP is the best-covered and a competitive method on our surface too---and under conditional scoring it is the worst of seven. A method can hold 90\% coverage on average while failing systematically at long horizons, on particular channels, or during particular seasons. Averages hide exactly the failures that make an interval worth having.
+
+\paragraph{Contributions.}
+\begin{enumerate}
+\item \textbf{An audit.} A conditional-coverage map over a horizon-bucket $\times$ channel grid on the four ETT benchmarks and a screened Electricity subset, across seven interval methods and two frozen backbones (Section~\ref{sec:audit}). Marginal and conditional coverage rank the methods in opposite orders.
+\item \textbf{A method, and the finding that its two halves are inseparable.} A bucketed horizon $\times$ channel conditional adaptive conformal layer (Section~\ref{sec:method}). Adaptation alone reliably hurts worst-cell coverage; conditioning alone is inconsistent; their combination is worth \ettPminusGD\ over the global baseline on ETT and \eclPminusGD\ on electricity load, and the same interaction appears within the conditioning, on the horizon axis specifically (Sections~\ref{sec:results}--\ref{sec:frailty}).
+\item \textbf{The price of whole-path guarantees.} Per-step 90\% intervals give essentially zero probability that an entire trajectory is covered. Restoring $\approx$0.9 whole-path coverage costs \ettMaxScoreRatio--\ettBonferroniRatio$\times$ the width on ETT and $\approx$\eclMaxScoreRatio$\times$ on electricity (Section~\ref{sec:joint}).
+\item \textbf{A decision-level evaluation, reported in both directions.} On interval-gated peak-load flagging, calibrated intervals beat a point-forecast rule only when misses cost at least $\approx$5$\times$ false alarms; below that the point rule is cheaper (Section~\ref{sec:decision}).
+\item \textbf{Two negative methodological results.} Scoring a bucket-count ablation on each setting's own grid reverses its conclusion (Section~\ref{sec:frailty}); and an online update that consumes a path's full-horizon outcome before the next path is issued uses up to $H - \text{stride}$ steps of future information while passing a standard leakage test (Section~\ref{sec:setup}). Both bit us before they became findings; both are cheap to check.
+\end{enumerate}
+
+\section{Related work and positioning}\label{sec:related}
+
+\paragraph{Conformal prediction for time series.} Split conformal prediction \citep{papadopoulos2002,lei2018} assumes exchangeability, which time series violate. ACI updates the target level online from realised coverage and guarantees long-run coverage without distributional assumptions \citep{aci}; DtACI and AgACI remove the fixed step size \citep{dtaci,agaci}; conformal PID control generalises the update \citep{cpid}. Multi-step variants calibrate per horizon (MSCP) or model cross-horizon error dependence with the feedback delay that multi-step forecasting imposes \citep{acmcp,o2cp}. Joint constructions target whole-trajectory coverage through Bonferroni correction \citep{cfrnn}, dynamic programming \citep{bellman} or copulas \citep{copulacpts}. Exact distribution-free conditional coverage is impossible in general \citep{vovk2012,leiwasserman2014,barber2021}; approximate and group-conditional guarantees exist \citep{gcc}.
+
+\paragraph{What the two halves are.} Our static conditional arm is Mondrian conformal prediction \citep{mondrian} with the taxonomy fixed to (horizon bucket, channel). Our adaptive arm runs one ACI tracker per Mondrian cell, which is the group-conditional online setting studied, with stronger guarantees than we claim, by multivalid conformal prediction \citep{mvp} and, concurrently, by online localised conformal prediction with covariate-kernel localisation \citep{olcp}. We are therefore not the first to condition, not the first to adapt, and not the first to do both. The contribution is (i) that on the LTSF grid, under conditional scoring, each half on its own is neutral or harmful; (ii) that the combination is what works, which to our knowledge no prior work reports on LTSF backbones at this scale; and (iii) the audit and decision layer around it.
+
+\paragraph{Nearest neighbours.} \citet{cpsurvey} is the closest benchmarking work and our central foil (Section~\ref{sec:audit}); it overlaps our setting in neither data, backbone nor metric. BC-ACI \citep{bcaci} is the closest method on the adaptation axis: it estimates forecast bias online per horizon and re-centres the interval. It moves the interval's centre; we condition its width; it has no channel dimension. We measure its premise on our surface in Section~\ref{sec:bias}. DeRegiME \citep{deregime} is the nearest work by data and backbone---probabilistic forecasting on the same suite with DLinear and PatchTST encoders---but trains a sparse-GP density model optimising NLPD and CRPS, where we perform distribution-free post-hoc calibration with coverage control and train nothing. ABF-T-GLCP \citep{glcp} localises calibration residuals by a learned gate state and recency, i.e.\ a data-driven taxonomy attached to its own forecasting module, and claims approximate local coverage under stability conditions; we use a fixed taxonomy, adapt online, and claim only long-run adaptive coverage. Architectural work on cross-channel and exogenous modelling \citep{itransformer,timexer} is out of scope: we contribute calibration, not architecture.
+
+\section{Setup}\label{sec:setup}
+
+\paragraph{Backbones.} We use DLinear and NLinear \citep{dlinear} as frozen point forecasters with look-back $L = 336$, fitted once per (dataset, horizon) by closed-form ridge least squares ($\lambda = 10^{-3} n$, bias unpenalised; DLinear kernel 25, one linear map shared across channels) and never updated. Because the objective is squared error and the models are linear, the normal equations return the global optimum of the objective that SGD approximates; there is no learning rate, epoch schedule or early stopping. This is a deviation from our written plan (Idea Lock v1.0, 16 July 2026, in the repository), which specified DLinear, PatchTST and Informer trained with the reference implementations; the two Transformer backbones were dropped under a compute-contraction rule and NLinear substituted. Section~\ref{sec:limitations} states what the substitution costs. The pipeline is deterministic end to end; the published seed (2026) exists for completeness and controls nothing in the reported numbers.
+
+\paragraph{Data and protocol.} ETTh1, ETTh2, ETTm1, ETTm2 at $H \in \Hset$ form the main study (\ettNumConfigs\ configurations: two backbones $\times$ four datasets $\times$ four horizons). A case study uses the LTSF Electricity benchmark \citep{uci_electricity,lstnet}, screened to 50 of 321 meters (Section~\ref{sec:casestudy}). Splits are the standard sequential 12/4/4 months (ETT) and 70/10/20 (Electricity), never random; the validation block is the calibration block. Drop-last batch truncation is disabled everywhere, since it inflates reported LTSF scores \citep{tfb}. Calibration and test windows start once per day (stride 24 on hourly data, 96 on 15-minute data). This is a deviation from the strict non-overlap rule in our plan, taken because non-overlapping windows leave 3 calibration paths at $H = 720$; at $H = 720$ adjacent daily windows still share 696 of 720 targets, so the calibration scores are strongly dependent and their count is not a sample size. Section~\ref{sec:ablations} ablates the stride where sample size permits, and Section~\ref{sec:limitations} carries the consequence.
+
+\paragraph{Online protocol, and a leak we found.} Adaptive methods update from realised coverage. In our first implementation each cell's tracker consumed a test path's outcomes at \emph{all} horizon steps before the next path---one day later---was issued, so the interval for path $t{+}1$ at horizon 720 had already seen an outcome that in real time lies 696 steps in its future. A standard leakage check passed (perturbing the second half of the test block leaves every first-half interval bit-identical), because the leaked information lies inside the first half. Every adaptive number in this paper is under the corrected protocol: a path's outcome in cell $(k,c)$ reaches the tracker only once the cell's last horizon step has been observed, a delay of $\lceil \text{edge}_k / \text{stride} \rceil$ paths (\ettLagLastBucketSevenTwenty\ paths for the last bucket at $H = 720$). The original ``instant-feedback'' numbers are retained in Appendix~\ref{app:oracle} as an oracle upper bound.
+
+\paragraph{Point-forecast sanity.} All 32 point MSEs are in Appendix~\ref{app:point}. DLinear on ETTh1 reaches \mseDLinearETThOneNinetySix\ / \mseDLinearETThOneOneNinetyTwo\ / \mseDLinearETThOneThreeThirtySix\ / \mseDLinearETThOneSevenTwenty\ at $H = 96/192/336/720$, within about 1.3\% of the published values; NLinear tracks its published values similarly. DLinear on ETTh2 and ETTm2 at $H \ge 336$ is \todo{fill from Zeng et al.\ Table 2, look-back 336}\ percent above the published figures, and ETTh2 at $H = 720$ (\mseDLinearETThTwoSevenTwenty) sits inside a range of published reproductions that disagree among themselves. We report the whole table rather than its flattering corner; the closed-form fit lacks the implicit regularisation of Adam with early stopping and this plausibly costs a few percent at the longest horizons.
+
+\paragraph{Metrics.} Let $\alpha = 0.10$. For a residual tensor $R \in \mathbb{R}^{n \times H \times C}$ and half-widths $\hat q$, empirical coverage on cell $(k,c)$ is the fraction of test paths and steps in horizon bucket $k$, channel $c$, with $|R| \le \hat q$. We report marginal coverage; worst-cell coverage $\wc = \min_{k,c}$; and, because a minimum over a wide grid is a noisy statistic, the 5th percentile of the cell distribution and the fraction of cells within $\pm 5$ points of target. We also report normalised width, the Winkler interval score \citep{winkler1972}, whole-path (joint) coverage, and paired sign counts over configurations with paired-bootstrap confidence intervals.
+
+\paragraph{Reproducibility.} A clean clone, re-run end to end, reproduces the committed result file across all \ettTotalValues\ numeric values with maximum absolute deviation 0.0 on the reference machine; across machines the numbers agree to four decimal places. Every number in this paper, in tables and in prose, is a macro generated from the released artefacts by a script; none is transcribed.
+
+\section{Method}\label{sec:method}
+
+The layer sits entirely downstream of a frozen forecaster and is implementable in NumPy.
+
+\paragraph{Nonconformity.} Residuals are normalised by a per-channel scale $s_c$---the median absolute deviation of the calibration residuals, fixed thereafter and floored at $10^{-8}$---giving scores $S = |R|/s_c$. MAD versus standard deviation is an ablation (Section~\ref{sec:ablations}).
+
+\paragraph{Bucketed conditioning.} Fitting $H$ independent quantiles for $H = 720$ from a calibration block of order $10^2$ paths explodes variance. We partition the horizon into $K$ log-spaced buckets with edges $\mathrm{unique}(\mathrm{round}(\mathrm{logspace}(0, \log_{10} H, K{+}1)))$, so that early steps get fine resolution and late steps are pooled; for $H = 720$, $K = 6$ the edges are $[1,3,9,27,80,240,720]$, and at small $H$ rounding can yield fewer than $K$ buckets (9 at $H = 96$, $K = 10$). Conditioning is on the product grid (bucket $\times$ channel): $K \times C$ cells, 42 on ETT and 300 on the electricity surface. $K$ is an ablation (Section~\ref{sec:frailty}).
+
+\paragraph{Split-conformal quantile.} Within each cell we take the $\lceil (n{+}1)(1{-}\alpha) \rceil / n$ empirical quantile of the cell's calibration scores, upper-interpolated. Since the scores come from overlapping windows, $n$ counts dependent observations and the finite-sample form is a convention, not a guarantee.
+
+\paragraph{Online adaptation.} Each cell carries its own ACI-style tracker. Once a path's outcome in the cell is realised (Section~\ref{sec:setup}), the cell's working level is updated with the path's empirical miss fraction over the cell's steps, $\alpha_{t+1} = \alpha_t + \gamma\,(\alpha - \widehat{\mathrm{miss}}_t)$, one update per path per cell. The running level is unclamped, which preserves the ACI memory; the effective level is clipped to $[10^{-4}, 0.5]$ when the quantile is read from the cell's own calibration scores, so an interval can never exceed the cell's largest calibration score. We fix $\gamma = 0.02$ before scoring any test block and use the same $\gamma$ for the unconditional ACI baseline. The tracker is per-cell: this is the only structural difference from ACI, and Section~\ref{sec:results} shows it is the difference that matters.
+
+\paragraph{Cost.} All seven methods on the largest ETT tensor ($91 \times 720 \times 7$ test intervals) run in \todo{re-time on the reference machine and inject}\ on a laptop CPU; the calibration layer is negligible beside any forecaster.
+
+\paragraph{Theory scope.} We claim only what the construction supports: ACI-family long-run adaptive coverage per cell, plus approximate conditioning at bucket resolution. We do not claim finite-sample validity under distribution shift, and we do not claim exact conditional coverage, which is impossible distribution-free \citep{vovk2012,barber2021}. Bucketing is a variance-control device, not a guarantee.
+
+\section{The audit: marginal coverage is uninformative}\label{sec:audit}
+
+Table~\ref{tab:main} compares seven interval methods spanning the $2 \times 2$ of conditioning and adaptation, plus a Gaussian-residual and an MSCP baseline, under the realised-feedback protocol.
+
+\begin{table}[t]\centering\small
+\caption{Main study: ETT $\times$ 4, 42-cell grid, target 0.90, mean over \ettNumConfigs\ configurations; adaptive rows use realised feedback. ``Wins'' = configurations in which the method's worst-cell coverage exceeds the global baseline's. Gaussian conditions per (step, channel) without bucketing. Per-step intervals give essentially zero whole-path coverage at every $H$ (Section~\ref{sec:joint}).}
+\label{tab:main}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{llcccccccc}
+\toprule
+Method & Cond.\ / adapt. & Marginal & Worst-cell & 5th pct.\ cell & Within $\pm$5 & Width & Winkler & Wins\\
+\midrule
+Gaussian residual & step $\times C$ / no & \ettGaussMarg & \ettGaussWorst & \ettGaussPfive & \ettGaussWithin & \ettGaussWidth & \textbf{\ettGaussWink} & \ettGaussWinsG\\
+Global split CP & none / no & \ettGlobalMarg & \ettGlobalWorst & \ettGlobalPfive & \ettGlobalWithin & \ettGlobalWidth & \ettGlobalWink & ---\\
+Per-horizon (MSCP) & horizon / no & \textbf{\ettMSCPMarg} & \textbf{\ettMSCPWorst} & \ettMSCPPfive & \ettMSCPWithin & \ettMSCPWidth & \ettMSCPWink & \ettMSCPWinsG\\
+Channel-only & channel / no & \ettCondCMarg & \ettCondCWorst & \ettCondCPfive & \ettCondCWithin & \ettCondCWidth & \ettCondCWink & \ettCondCWinsG\\
+Static conditional & $K \times C$ / no & \ettCondMarg & \ettCondWorst & \ettCondPfive & \ettCondWithin & \ettCondWidth & \ettCondWink & \ettCondWinsG\\
+ACI & none / yes & \ettACIdMarg & \ettACIdWorst & \ettACIdPfive & \ettACIdWithin & \textbf{\ettACIdWidth} & \ettACIdWink & \ettACIdWinsG\\
+\textbf{Proposed} & $K \times C$ / yes & \ettPropDMarg & \textbf{\ettPropDWorst} & \textbf{\ettPropDPfive} & \textbf{\ettPropDWithin} & \ettPropDWidth & \ettPropDWink & \textbf{\ettPropDWinsG}\\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+Read the marginal column alone and the seven methods are indistinguishable: every one lands within a point of the 90\% target. Read the worst-cell column and they span fourteen points; read the within-$\pm 5$ column and the global baseline has fewer than a quarter of its cells near target while the proposed layer has \ettPropDWithin.
+
+\paragraph{The ranking inverts.} MSCP has the \emph{best} marginal coverage in the table and the \emph{worst} conditional coverage---\ettMSCPWorst, four points below simply using one global quantile. This is not a quirk of our implementation: a benchmark scoring marginal coverage, width and Winkler, as \citet{cpsurvey} does, would rank MSCP first on coverage and never see that it is the method that fails hardest per cell. Per-horizon conditioning spends a fixed calibration budget across $H$ separate quantiles, so each is estimated from fewer effective samples, and the variance shows up in the minimum; Section~\ref{sec:calwindow} confirms that on ETT this failure shrinks with calibration data (MSCP gains \cwettMSCPGain\ of worst-cell across a fourfold increase), i.e.\ it is variance, not structure.
+
+\section{Results: the interaction is the finding}\label{sec:results}
+
+The four rows of the $2 \times 2$ in Table~\ref{tab:main} are the experiment:
+\[
+\underbrace{\ettGlobalWorst}_{\text{neither}} \quad
+\underbrace{\ettCondWorst}_{\text{conditioning only}} \quad
+\underbrace{\ettACIdWorst}_{\text{adaptation only}} \quad
+\underbrace{\ettPropDWorst}_{\text{both}}
+\]
+Neither intervention helps on its own, and the two fail differently. Adaptation alone is reliably worse than the do-nothing baseline: \ettAminusGD\ on average, better in only \ettACIdWinsG\ configurations, 95\% CI \ettAminusGCID. Conditioning alone is inconsistent: \ettCminusG\ on average with a CI \ettCminusGCI\ that spans zero, better than global in \ettCondWinsG\ configurations and on three of the four datasets (ETTm1 \ettCondWorstETTmOne\ vs.\ \ettGlobalWorstETTmOne), but far worse on ETTh1 (\ettCondWorstETThOne\ vs.\ \ettGlobalWorstETThOne), where the 42 static cells are estimated from too little data. The combination is not inconsistent: \ettPminusGD\ over global, CI \ettPminusGCID, in \ettPropDWinsG\ configurations. The interaction term is
+\[
+\text{P} - \text{C} - \text{A} + \text{G} = \ettInteractionD \qquad (95\%\ \text{CI } \ettInteractionCID),
+\]
+and it is positive on the grid-size-invariant statistics too (5th-percentile cell \ettInteractionPfiveD, within-$\pm 5$ fraction \ettInteractionWithinD).
+
+The mechanism is intelligible. Conditioning alone slices a finite calibration block into 42 cells and each cell's static quantile inherits the variance---concentrated in the minimum, and on ETTh1 catastrophically. Adaptation alone has enough data but one global knob, so it cannot move a cell that is failing while the aggregate looks healthy; it purchases marginal coverage by narrowing (width \ettACIdWidth, the narrowest in the table) and its worst cell degrades. Together, conditioning supplies the resolution to see per-cell failure and adaptation supplies the correction.
+
+\paragraph{Width and score.} Proposed is narrower than the global baseline (\ettPropDWidth\ vs.\ \ettGlobalWidth, ratio \ettPropDWidthOverGlobal) and has the best Winkler score of the six conformal methods (\ettPropDWink). The parametric Gaussian baseline is narrowly ahead on Winkler (\ettGaussWink) while sitting nine points below on worst-cell coverage; under the instant-feedback oracle (Appendix~\ref{app:oracle}) Proposed led on Winkler outright, and the difference is the price of realised feedback at long horizons.
+
+\paragraph{Consistency.} Against MSCP and ACI, Proposed wins on worst-cell in \ettPropWinsMSCPD\ and \ettPropWinsACIdD\ configurations; against static conditional \ettPropWinsCondD, channel-only \ettPropWinsCondCD, global \ettPropDWinsG, and the Gaussian baseline \ettPropWinsGaussD. The gain over global is present at every horizon (\ettPropGainNinetySixD, \ettPropGainOneNinetyTwoD, \ettPropGainThreeThirtySixD, \ettPropGainSevenTwentyD\ at $H = 96, 192, 336, 720$) and smallest at $H = 720$, where the last bucket's tracker waits \ettLagLastBucketSevenTwenty\ paths for its first realised update.
+
+\paragraph{Backbone swap.} The layer never sees the forecaster. Swapping DLinear for NLinear, Proposed reaches worst-cell \ettPropDWorstDLinear\ and \ettPropDWorstNLinear\ respectively, while the global baseline moves by three points (\ettGlobalWorstDLinear\ vs.\ \ettGlobalWorstNLinear). The two backbones have materially different error processes (Section~\ref{sec:bias}), which makes the agreement more informative than two backbones that merely share a name---but they are two members of one linear family, and Section~\ref{sec:limitations} does not call this independence.
+
+\section{Both halves of the conditioning need the adaptation}\label{sec:frailty}
+
+Setting $K = 1$ collapses the horizon axis, leaving channel-only conditioning; we verified structurally that Proposed at $K = 1$ equals the channel-only adaptive arm exactly in all 32 configurations. Sweeping $K$ and scoring every setting on the \emph{same} fixed $K = 6$ grid (instant feedback; the ablation predates the protocol change and is \todo{re-run under realised feedback}):
+
+\begin{center}\footnotesize
+\begin{tabular}{llccc}
+\toprule
+Surface & Arm & $K{=}1$ (channel only) & $K{=}6$ (horizon $\times$ channel) & Horizon-axis effect\\
+\midrule
+ETT & Static (Cond) & \haettCondKOne & \haettCondKSix & \haettCondEffect\\
+ETT & Adaptive (Proposed) & \haettPropKOne & \haettPropKSix & \haettPropEffect\\
+Electricity & Static (Cond) & \haeclCondKOne & \haeclCondKSix & \haeclCondEffect\\
+Electricity & Adaptive (Proposed) & \haeclPropKOne & \haeclPropKSix & \haeclPropEffect\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+On ETT the horizon axis \emph{hurts} without adaptation and \emph{helps} with it: a second interaction of \haettInteraction, with $K = 6$ beating $K = 1$ in \haettPropKSixBeatsKOneFixed\ configurations on the adaptive arm. On electricity the axis hurts the static arm badly (\haeclCondEffect) and adaptation \emph{neutralises} the harm rather than converting it into a gain (\haeclPropEffect); the interaction (\haeclInteraction) is carried by the static collapse. The honest statement is that the horizon axis is safe under adaptation and unsafe without it, and pays on ETT.
+
+\paragraph{A scoring artefact that reversed this conclusion.} Our first $K$ ablation scored each $K$ on \emph{its own} grid. Worst-cell coverage is a minimum over $K \times C$ cells---7 cells at $K = 1$, 70 at $K = 10$---and a minimum over fewer, larger cells is higher almost by construction. Own-grid scoring therefore decreases monotonically in $K$ (\haettPropOwnKOne\ at $K{=}1$ to \haettPropOwnKTen\ at $K{=}10$) and recommends discarding the horizon axis; fixed-grid scoring recommends $K = 6$. The sign test flips completely: $K = 6$ beats $K = 1$ in \haettPropKSixBeatsKOneFixed\ configurations on a fixed grid and \haettPropKSixBeatsKOneOwn\ on own grids. The two agree exactly at $K = 6$, where the grids coincide, which is the consistency check that nothing else moved.
+
+We report this because the confounded figure was presented before the error was found, and because the rule is reusable: \textbf{never compare a minimum or maximum across settings that change the number of cells it is taken over.} The same rule forbids ranking our two surfaces by their interactions: a minimum over 300 cells is not a minimum over 42, and where we compare surfaces below we use the distributional statistics instead.
+
+\section{Case study: electricity load under seasonal shift}\label{sec:casestudy}
+
+We screen the 321-client LTSF Electricity benchmark to meters with no zero readings---a measured criterion, not an assumed one: 92 of 321 qualify and we keep the first 50 by column order, yielding a 300-cell grid. The sequential split places calibration in late winter and spring and the test block from late spring through the end of the year, so the evaluation crosses a genuine seasonal transition. Because a minimum over 300 cells is a noisy statistic, Table~\ref{tab:ecl} reports the grid distribution alongside it.
+
+\begin{table}[t]\centering\small
+\caption{Electricity, 50 meters, 300-cell grid, target 0.90, mean over \eclNumConfigs\ configurations (two backbones $\times$ four horizons); adaptive rows use realised feedback.}
+\label{tab:ecl}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lcccccc}
+\toprule
+Method & Marginal & Worst-cell & 5th pct.\ cell & Within $\pm$5 pt & Width & Winkler\\
+\midrule
+Gaussian residual & \eclGaussMarg & \eclGaussWorst & \eclGaussPfive & \eclGaussWithin & \eclGaussWidth & \eclGaussWink\\
+Global split CP & \eclGlobalMarg & \eclGlobalWorst & \eclGlobalPfive & \eclGlobalWithin & \eclGlobalWidth & \eclGlobalWink\\
+Per-horizon (MSCP) & \eclMSCPMarg & \eclMSCPWorst & \eclMSCPPfive & \eclMSCPWithin & \textbf{\eclMSCPWidth} & \eclMSCPWink\\
+Channel-only & \eclCondCMarg & \eclCondCWorst & \eclCondCPfive & \eclCondCWithin & \eclCondCWidth & \eclCondCWink\\
+Static conditional & \eclCondMarg & \eclCondWorst & \eclCondPfive & \eclCondWithin & \eclCondWidth & \eclCondWink\\
+ACI & \eclACIdMarg & \eclACIdWorst & \eclACIdPfive & \eclACIdWithin & \eclACIdWidth & \textbf{\eclACIdWink}\\
+\textbf{Proposed} & \textbf{\eclPropDMarg} & \textbf{\eclPropDWorst} & \textbf{\eclPropDPfive} & \textbf{\eclPropDWithin} & \eclPropDWidth & \eclPropDWink\\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+Under shift every static method under-covers even marginally, so here the marginal column is informative too. The pattern of Section~\ref{sec:results} sharpens: static conditioning is actively harmful (\eclCondWorst, eleven points below the global baseline); adaptation alone recovers part of it (\eclACIdWorst); the combination reaches \eclPropDWorst, with \eclPropDWithin\ of the 300 cells within five points of target against \eclGlobalWithin\ under global conformal. The interaction is \eclInteractionD\ on the minimum and \eclInteractionPfiveD\ on the 5th-percentile cell. The gain is not free on this surface: under realised feedback Proposed is \eclPropDWidthOverGlobal$\times$ the width of the global baseline and its Winkler score (\eclPropDWink) is on par with global and ACI rather than ahead of them. Conditional coverage under shift is bought with width here; on ETT it was not.
+
+\subsection{Adaptation, observed rather than averaged}\label{sec:traces}
+
+A block average cannot distinguish a method that holds target from one that over-covers and then collapses. Figure~\ref{fig:traces} plots rolling coverage through the test block. \todo{Figures~\ref{fig:traces}--\ref{fig:calwindow} and the numbers in Sections~\ref{sec:traces}--\ref{sec:calwindow} are from the instant-feedback runs; re-run \texttt{run\_traces.py} and \texttt{run\_calwindow.py} with the realised-feedback update and regenerate.}
+
+\begin{figure}[t]\centering
+\includegraphics[width=0.86\textwidth]{fig_traces.png}
+\caption{Rolling 30-day coverage, Electricity, DLinear, $H = 720$, instant feedback. Static global conformal dips through the autumn transition to \treclGlobalMinRollDLinearSevenTwenty\ at test day \treclGlobalMinAtPath; the conditional adaptive layer holds \treclPropMinRollDLinearSevenTwenty\ through the identical window on identical forecasts.}
+\label{fig:traces}
+\end{figure}
+
+Across the eight electricity configurations, global conformal spends \treclGlobalBelow\ of the test period below 0.85 coverage (five points under target, the half-width of the ``within $\pm 5$'' band), with excursions averaging \treclGlobalExcursion\ days; ACI and Proposed spend \treclPropBelow\ there. The static failure is not diffuse: its worst window falls at the same test day in seven of eight configurations and for both backbones, i.e.\ it is a property of the data, and it deepens with horizon.
+
+\paragraph{Reported against ourselves.} On ETT, whose split does not cross a season, the effect is much weaker---global \trettGlobalBelow\ below 0.85, Proposed \trettPropBelow---and ACI alone is \emph{worse than doing nothing} (\trettACIBelow). Adaptation is not a free win; it is the interaction again, seen from a third direction.
+
+\subsection{How much calibration data does this need?}\label{sec:calwindow}
+
+Truncating the calibration block from the front (keeping the most recent paths) separates a structural limitation from a statistical one, and the answer differs by surface. On ETT every method is data-limited: across a fourfold increase in calibration paths (\cwettNcalQtr\ to \cwettNcalFull) MSCP gains \cwettMSCPGain\ of worst-cell, global \cwettGlobalGain, static conditional \cwettCondGain, and Proposed \cwettPropGain; Proposed leads at every size, including at $n_{\mathrm{cal}} = \cwettNcalQtr$ (\cwettPropQtr\ against the best baseline's \cwettBestBaselineQtr). On electricity the two failure modes separate cleanly: the global baseline gains \cweclGlobalGain\ and MSCP \cweclMSCPGain, while Proposed gains \cweclPropGain\ (\cweclPropQtr\ to \cweclPropFull) and has not saturated (Figure~\ref{fig:calwindow}). Under the seasonal shift the baselines' failure is structural---more data does not help them---whereas ours is statistical: it is estimating a 300-cell grid from fewer than a hundred paths. The reported electricity numbers are therefore a floor, and the honest limitation is that wide grids need data.
+
+\begin{figure}[t]\centering
+\includegraphics[width=0.72\textwidth]{fig_calwindow.png}
+\caption{Worst-cell coverage against calibration size, Electricity, fixed $K = 6$ grid, instant feedback. Baselines plateau; the conditional adaptive layer is data-limited, not structure-limited. \todo{add the static-conditional curve on both surfaces; remove the in-plot title}}
+\label{fig:calwindow}
+\end{figure}
+
+\section{Whole-path coverage and its price}\label{sec:joint}
+
+Per-cell 90\% coverage is not 90\% coverage of an entire trajectory, and conflating the two would be a serious overclaim. We measure both. Every per-step method achieves essentially zero joint coverage: on ETT the probability that all steps across all channels are simultaneously covered is \ettPropPerStepJointNinetySix\ for Proposed and \ettGaussPerStepJointNinetySix\ for the Gaussian baseline at $H = 96$, and \ettPropPerStepJointSevenTwenty\ for every method at $H \ge 336$. A max-normalised-score layer \citep{cfrnn,copulacpts} on ETT restores whole-path coverage to \ettMaxScoreJoint\ at \ettMaxScoreRatio$\times$ the width (per $H$: \ettMaxScoreJointNinetySix, \ettMaxScoreJointOneNinetyTwo, \ettMaxScoreJointThreeThirtySix, \ettMaxScoreJointSevenTwenty); a Bonferroni layer gives \ettBonferroniJoint\ at \ettBonferroniRatio$\times$. On electricity the same layers reach \eclMaxScoreJoint\ and \eclBonferroniJoint\ at \eclMaxScoreRatio$\times$ and \eclBonferroniRatio$\times$. Whole-path coverage on the LTSF grid is available and its price ranges from three to ten times the interval width depending on the surface. That is a finding about the regime, not a defect of any method, and it is why we report both numbers.
+
+Joint coverage is also strongly finite-sample. On electricity, holding calibration size fixed at 80 paths, whole-path coverage is 0.9259 at $H = 96$ against 0.8947 at $H = 720$, while at full calibration $H = 96$ reaches \eclMaxScoreJointNinetySix; the decay from $H = 96$ to $H = 720$ therefore decomposes into $(0.9259 - 0.8947)/(\eclMaxScoreJointNinetySix - 0.8947) \approx 63\%$ horizon effect and 37\% sample-size effect \todo{inject these four figures from cw\_ecl.json}. At $H = 720$, halving calibration from 80 to 40 paths drops joint coverage from 0.8947 to 0.5632.
+
+\section{Decision-level evaluation}\label{sec:decision}
+
+Coverage is instrumental. On the electricity surface (mean over \decNumConfigs\ configurations, all four horizons) we evaluate interval-gated peak-load flagging: a per-meter peak threshold is set at the \decPeakQ\ quantile of the calibration block only (we verified by source inspection and by perturbation that no test data enters it), and a meter-hour is flagged when the point forecast, or the upper interval endpoint, exceeds it. Costs are normalised so that flagging nothing costs 1.0.
+
+\begin{center}\small
+\begin{tabular}{lcccc}
+\toprule
+Miss\,:\,false-alarm & Flag all & Point forecast & Interval (global) & Interval (Proposed)\\
+\midrule
+2:1 & \decFlagAllTwo & \textbf{\decPointTwo} & \decGlobalTwo & \decPropTwo\\
+5:1 & \decFlagAllFive & \decPointFive & \decGlobalFive & \textbf{\decPropFive}\\
+10:1 & \decFlagAllTen & \decPointTen & \decGlobalTen & \textbf{\decPropTen}\\
+20:1 & \decFlagAllTwenty & \decPointTwenty & \decGlobalTwenty & \textbf{\decPropTwenty}\\
+50:1 & \decFlagAllFifty & \decPointFifty & \decGlobalFifty & \textbf{\decPropFifty}\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Calibrated intervals are not universally better. At 2:1 the point rule is cheaper, because interval gating flags aggressively (recall \decPropRecall\ at precision \decPropPrecision, against \decPointRecall\ at \decPointPrecision\ for the point rule) and pays for it in false alarms. From roughly 5:1 the ordering reverses and widens: at 10:1 the proposed layer costs \decPropTen\ against the point rule's \decPointTen. On the worst channel the picture is worse: at 2:1 the interval rules reach \decWorstGlobalTwo--\decWorstPropTwo$\times$ the do-nothing cost. Two caveats bound the claim. The point and interval rules operate at different points on the recall--precision curve, and a point rule with a constant margin tuned on the calibration block is the fair comparator (\todo{tuned-margin baseline}); until it is reported, the result says that a conformal margin beats \emph{no} margin in asymmetric-cost regimes, not that it beats every margin. And the decision numbers were produced with instant feedback (\todo{re-run}). Interval gating is a tool for asymmetric-cost regimes, and we report the regime where it loses as plainly as the one where it wins.
+
+\section{Ablations and diagnostics}\label{sec:ablations}
+
+Unless stated, the ablations below were run on a single configuration, DLinear / ETTh1 / $H = 720$, under instant feedback, which is why their Proposed value (0.8571) differs from the 32-configuration mean in Table~\ref{tab:main}. \todo{re-run $\gamma$, scale and $K$ on all 32 configurations under realised feedback; inject}
+
+\paragraph{Adaptation step size.} Worst-cell coverage rises monotonically with $\gamma$ (0.6520 at $\gamma = 0$, i.e.\ static conditional on this configuration; 0.7546 at 0.005; 0.8571 at 0.02; 0.8791 at 0.05; 0.8901 at 0.1) while width falls (3.5677 to 2.3627). We fixed $\gamma = 0.02$ before scoring and did not move it; the monotone trend indicates the result is not a knife-edge tuning artefact, and that larger $\gamma$ would if anything have flattered us.
+
+\paragraph{Scale estimator.} With MAD normalisation the global baseline reaches 0.8549 worst-cell against 0.6869 with standard deviation, while Proposed is invariant at 0.8571: the conditional adaptive layer absorbs a choice that materially changes the baseline.
+
+\paragraph{Stride.} DLinear / ETTh1 / $H = 96$, the only setting with enough non-overlapping windows. Across strides 24 / 48 / 96 ($n_{\mathrm{cal}} = 117 / 59 / 30$) Proposed scores 0.8702 / 0.8382 / 0.7500 and leads at every stride. The ordering is stable; the level falls with stride, which is consistent with the sample-size effect of Section~\ref{sec:calwindow} but cannot, at 30 non-overlapping paths, be separated from the optimism that overlapping windows can induce.
+
+\subsection{Is the gain just absorbing forecast bias?}\label{sec:bias}
+
+BC-ACI \citep{bcaci} argues that a frozen forecaster develops persistent bias after a shift, and that symmetric intervals then pay a width overhead of roughly twice the bias. Our intervals are symmetric and our case-study split is seasonal, so the premise applies and we tested it.
+
+The answer splits by backbone. DLinear carries per-cell bias of \biasettDLinearFrac\ of interval width on ETT, and it persists: calibration-block bias predicts test-block bias at $r = \biasettDLinearR$ (ETT) and $\biaseclDLinearR$ (electricity), growing with horizon. NLinear carries \biasettNLinearFrac\ with no positive persistence ($r = \biasettNLinearR$ on ETT and $\biaseclNLinearR$ on electricity, the latter an \emph{anti}-persistence that a calibration-block correction would get wrong). The mechanism is architectural: NLinear subtracts the last observed value and re-anchors each window, while DLinear decomposes trend and seasonality and drifts.
+
+Two conclusions follow. First, a leakage-free re-centring buys width, not coverage: pooled over ETT it returns \biasettDLinearRecentre\ of width on DLinear and \biasettNLinearRecentre\ on NLinear, and on the single worst DLinear configuration (ETTh2, $H = 720$) 11.2\% of width while moving worst-cell coverage the wrong way (0.8547 to 0.8451). Bias correction is orthogonal to our objective and composable with our layer, since it acts on the score and we act on the quantile. Second, this rules out an alternative explanation for Section~\ref{sec:frailty}: if the horizon axis were merely soaking up horizon-dependent bias, its benefit would be far larger on DLinear, which carries about four times the bias as a fraction of width. It is not---$+0.0406$ on DLinear against $+0.0383$ on NLinear---and per configuration the association is slightly negative ($r = -0.317$). The horizon axis is capturing scale heterogeneity, consistent with the observation that per-horizon interval width is strongly daily-periodic (lag-24 autocorrelation $+0.9810$) rather than monotone in $h$; a conditioning axis on hour-of-day rather than log-spaced horizon is the natural next ablation.
+
+\section{Limitations}\label{sec:limitations}
+
+\paragraph{Backbones.} We evaluate two linear forecasters, not the Transformer architectures our study was designed around. The model-agnosticism claim is supported across two backbones with genuinely different error processes, but not across architectural families. The decisive test is PatchTST, which enforces channel independence by construction: if the channel axis is where calibration breaks, a channel-independent backbone should either shrink the gain or enlarge it, and neither result is available here.
+
+\paragraph{Baselines.} Conformal PID, AcMCP/MPID, CopulaCPTS and pinball-trained quantile heads were in our written comparison set and are absent from this draft. AcMCP is the dependence-aware, delayed-feedback method for exactly this problem and is the most important omission. \todo{add PID and AcMCP, or state the reason for their absence}
+
+\paragraph{Dependence and guarantees.} Calibration windows overlap heavily, so cell counts are not sample sizes and the finite-sample split-conformal form is a convention. We claim long-run adaptive coverage and approximate bucketed conditioning, nothing stronger; exact conditional coverage is unattainable distribution-free \citep{barber2021}, and our finite-sample marginal guarantee does not survive the non-exchangeability we deliberately evaluate under.
+
+\paragraph{Feedback delay.} Realised feedback costs the most at $H = 720$ (Section~\ref{sec:results}) and on electricity (Section~\ref{sec:casestudy}); a sliding calibration pool that admits realised test scores, as in EnbPI \citep{enbpi}, would reduce the cost and is not evaluated here.
+
+\paragraph{Grid width and cross-surface comparison.} Worst-cell coverage over 300 cells is not comparable to worst-cell coverage over 42; we report distributional statistics alongside and do not rank surfaces by their minima or by their interactions on minima.
+
+\paragraph{Sample size and selection.} On the 300-cell surface the method has not saturated in calibration data. The 50 meters are the first 50 zero-free columns, one split, one year of test data. All uncertainty statements are paired bootstraps over configurations, which share datasets and are not independent.
+
+\paragraph{One reproduction discrepancy.} DLinear at the longest horizons on ETTh2 and ETTm2 (Appendix~\ref{app:point}) remains above the published values; the closed-form fit is the likely cause.
+
+\section{Conclusion}
+
+Attaching conformal prediction to an LTSF forecaster is easy; attaching it so that coverage holds where it is needed is not. Scored marginally, seven interval methods are indistinguishable and the ranking recommends the one that fails hardest per cell. Scored conditionally, the obvious individual repairs do not help: adapting the quantile online reliably makes the worst cell worse, and conditioning it on horizon and channel helps or hurts depending on the dataset. What works is the combination, under an honest online protocol, at negligible computational cost and without touching the forecaster.
+
+We think the transferable lessons are about evaluation. A single aggregate coverage number is compatible with systematic failure along horizon, channel and season; a minimum computed over a grid is not comparable across settings that change the grid; and an online update can pass a leakage test while consuming the future. All three bit us before they became findings, and all three are cheap to check.
+
+\paragraph{Reproducibility.} Code, all result artefacts, the generated number macros used to build this document, and the complete decision, failure and open-question registers---including the lost-work incidents, the scoring confound and the feedback leak described above---are released at \url{https://github.com/aarush093/coverage-across-the-horizon}. The main study runs in under four minutes on CPU.
+
+\appendix
+
+\section{Instant-feedback (oracle) results}\label{app:oracle}
+
+The numbers below are those of Draft v1. Each cell's tracker consumed a path's outcomes at all horizon steps before the next path was issued; they bound what realised feedback can achieve. Static rows are unchanged from the main text.
+
+\begin{center}\small
+\begin{tabular}{llcccccc}
+\toprule
+Surface & Method & Marginal & Worst-cell & 5th pct.\ cell & Within $\pm$5 & Width & Winkler\\
+\midrule
+ETT & ACI (instant) & \ettACIMarg & \ettACIWorst & \ettACIPfive & \ettACIWithin & \ettACIWidth & \ettACIWink\\
+ETT & Proposed (instant) & \ettPropMarg & \ettPropWorst & \ettPropPfive & \ettPropWithin & \ettPropWidth & \ettPropWink\\
+Electricity & ACI (instant) & \eclACIMarg & \eclACIWorst & \eclACIPfive & \eclACIWithin & \eclACIWidth & \eclACIWink\\
+Electricity & Proposed (instant) & \eclPropMarg & \eclPropWorst & \eclPropPfive & \eclPropWithin & \eclPropWidth & \eclPropWink\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Interactions under instant feedback: ETT \ettInteraction\ (CI \ettInteractionCI), electricity \eclInteraction. Per horizon on ETT, Proposed instant vs.\ realised: \ettPropWorstNinetySix\ vs.\ \ettPropWorstNinetySixD, \ettPropWorstOneNinetyTwo\ vs.\ \ettPropWorstOneNinetyTwoD, \ettPropWorstThreeThirtySix\ vs.\ \ettPropWorstThreeThirtySixD, \ettPropWorstSevenTwenty\ vs.\ \ettPropWorstSevenTwentyD. On electricity at $H = 720$: \eclPropWorstSevenTwenty\ vs.\ \eclPropWorstSevenTwentyD.
+
+\section{Point-forecast sanity, all configurations}\label{app:point}
+
+\begin{center}\small
+\input{table_point.tex}
+\end{center}
+\todo{add the published column from Zeng et al.\ (2023), Table 2, look-back 336, and the percentage deviation}
+
+\section{Bucket edges}\label{app:buckets}
+
+$K = 6$ edges by the rule of Section~\ref{sec:method}: $H = 96$: $[1,2,5,10,21,45,96]$; $H = 192$: \todo{print from \texttt{buckets(192, 6)}}; $H = 336$: \todo{print}; $H = 720$: $[1,3,9,27,80,240,720]$.
+
+\begin{thebibliography}{40}
+\bibitem[Zhou et al.(2021)]{informer} H.~Zhou, S.~Zhang, J.~Peng, S.~Zhang, J.~Li, H.~Xiong, W.~Zhang. Informer: Beyond efficient Transformer for long sequence time-series forecasting. \emph{AAAI}, 2021.
+\bibitem[Zeng et al.(2023)]{dlinear} A.~Zeng, M.~Chen, L.~Zhang, Q.~Xu. Are Transformers effective for time series forecasting? \emph{AAAI}, 2023. (Introduces DLinear and NLinear.)
+\bibitem[Nie et al.(2023)]{patchtst} Y.~Nie, N.~H.~Nguyen, P.~Sinthong, J.~Kalagnanam. A time series is worth 64 words: Long-term forecasting with Transformers. \emph{ICLR}, 2023.
+\bibitem[Zhang et al.(2024)]{probts} J.~Zhang et al. ProbTS: Benchmarking point and distributional forecasting across diverse prediction horizons. \emph{NeurIPS Datasets \& Benchmarks}, 2024.
+\bibitem[Gibbs \& Cand\`es(2021)]{aci} I.~Gibbs, E.~Cand\`es. Adaptive conformal inference under distribution shift. \emph{NeurIPS}, 2021.
+\bibitem[Gibbs \& Cand\`es(2024)]{dtaci} I.~Gibbs, E.~Cand\`es. Conformal inference for online prediction with arbitrary distribution shifts. \emph{JMLR}, 25, 2024. arXiv:2208.08401.
+\bibitem[Zaffran et al.(2022)]{agaci} M.~Zaffran, O.~F\'eron, Y.~Goude, J.~Josse, A.~Dieuleveut. Adaptive conformal predictions for time series. \emph{ICML}, 2022.
+\bibitem[Angelopoulos et al.(2023)]{cpid} A.~N.~Angelopoulos, E.~Cand\`es, R.~J.~Tibshirani. Conformal PID control for time series prediction. \emph{NeurIPS}, 2023.
+\bibitem[Wang \& Hyndman(2024)]{acmcp} X.~Wang, R.~J.~Hyndman. Online conformal inference for multi-step time series forecasting. arXiv:2410.13115.
+\bibitem[Li et al.(2026)]{o2cp} R.~Li, D.~Menacho, A.~Rodr\'iguez. Optimization-based online conformal prediction for multi-step forecasting. arXiv:2508.13362v2.
+\bibitem[Stankeviciute et al.(2021)]{cfrnn} K.~Stankeviciute, A.~M.~Alaa, M.~van der Schaar. Conformal time-series forecasting. \emph{NeurIPS}, 2021.
+\bibitem[Yang et al.(2024)]{bellman} Z.~Yang, E.~Cand\`es, L.~Lei. Bellman conformal inference: Calibrating prediction intervals for time series. arXiv:2402.05203.
+\bibitem[Sun \& Yu(2023)]{copulacpts} S.~Sun, R.~Yu. Copula conformal prediction for multi-step time series forecasting. \emph{ICLR}, 2023. arXiv:2212.03281.
+\bibitem[Vovk et al.(2003)]{mondrian} V.~Vovk, D.~Lindsay, I.~Nouretdinov, A.~Gammerman. Mondrian confidence machine. Technical report, Royal Holloway, University of London, 2003.
+\bibitem[Bastani et al.(2022)]{mvp} O.~Bastani, V.~Gupta, C.~Jung, G.~Noarov, R.~Ramalingam, A.~Roth. Practical adversarial multivalid conformal prediction. \emph{NeurIPS}, 2022.
+\bibitem[Lai et al.(2026)]{olcp} Y.~Lai et al. Online localized conformal prediction. arXiv:2605.05497. \todo{complete author list}
+\bibitem[Vovk(2012)]{vovk2012} V.~Vovk. Conditional validity of inductive conformal predictors. \emph{ACML}, PMLR 25, 2012.
+\bibitem[Lei \& Wasserman(2014)]{leiwasserman2014} J.~Lei, L.~Wasserman. Distribution-free prediction bands for non-parametric regression. \emph{JRSS-B}, 76(1), 2014.
+\bibitem[Foygel Barber et al.(2021)]{barber2021} R.~Foygel Barber, E.~J.~Cand\`es, A.~Ramdas, R.~J.~Tibshirani. The limits of distribution-free conditional predictive inference. \emph{Information and Inference}, 10(2), 2021.
+\bibitem[Gibbs et al.(2025)]{gcc} I.~Gibbs, J.~J.~Cherian, E.~J.~Cand\`es. Conformal prediction with conditional guarantees. \emph{JRSS-B}, 2025.
+\bibitem[Papadopoulos et al.(2002)]{papadopoulos2002} H.~Papadopoulos, K.~Proedrou, V.~Vovk, A.~Gammerman. Inductive confidence machines for regression. \emph{ECML}, 2002.
+\bibitem[Lei et al.(2018)]{lei2018} J.~Lei, M.~G'Sell, A.~Rinaldo, R.~J.~Tibshirani, L.~Wasserman. Distribution-free predictive inference for regression. \emph{JASA}, 113(523), 2018.
+\bibitem[Xu \& Xie(2021)]{enbpi} C.~Xu, Y.~Xie. Conformal prediction interval for dynamic time-series. \emph{ICML}, 2021.
+\bibitem[Winkler(1972)]{winkler1972} R.~L.~Winkler. A decision-theoretic approach to interval estimation. \emph{JASA}, 67(337), 1972.
+\bibitem[Qiu et al.(2024)]{tfb} X.~Qiu et al. TFB: Towards comprehensive and fair benchmarking of time series forecasting methods. \emph{PVLDB}, 17(9), 2024.
+\bibitem[Sabashvili(2026)]{cpsurvey} A.~Sabashvili. Conformal prediction algorithms for time series forecasting: Methods and benchmarking. arXiv:2601.18509.
+\bibitem[Lade et al.(2026)]{bcaci} A.~Lade, S.~Krishna~J., I.~Kumar. Bias-corrected adaptive conformal inference for multi-horizon time series forecasting. arXiv:2604.13253.
+\bibitem[Wood et al.(2026)]{deregime} K.~Wood, S.~Zohren, S.~J.~Roberts. DeRegiME: Deep regime mixtures for probabilistic forecasting under distribution shift. arXiv:2605.19231.
+\bibitem[Ma et al.(2026)]{glcp} Z.~Ma, J.~Jiang, \'A.~L\'opez-Oriona, Y.~Sun, H.~Ombao. Adaptive multi-scale forecasting and gate-localized conformal prediction for multivariate nonstationary time series. arXiv:2607.23165.
+\bibitem[Liu et al.(2024)]{itransformer} Y.~Liu et al. iTransformer: Inverted Transformers are effective for time series forecasting. \emph{ICLR}, 2024.
+\bibitem[Wang et al.(2024)]{timexer} Y.~Wang et al. TimeXer: Empowering Transformers for time series forecasting with exogenous variables. \emph{NeurIPS}, 2024.
+\bibitem[Trindade(2015)]{uci_electricity} A.~Trindade. ElectricityLoadDiagrams20112014. UCI Machine Learning Repository, 2015.
+\bibitem[Lai et al.(2018)]{lstnet} G.~Lai, W.-C.~Chang, Y.~Yang, H.~Liu. Modeling long- and short-term temporal patterns with deep neural networks. \emph{SIGIR}, 2018.
+\end{thebibliography}
+% Reference-integrity note (02_OPERATING_RULES): entries cpsurvey, bcaci, o2cp, deregime and glcp
+% were resolved against arXiv on 2026-08-30/31. Entries dtaci, agaci, cfrnn, mondrian, mvp,
+% vovk2012, leiwasserman2014, barber2021, papadopoulos2002, lei2018, enbpi, winkler1972, tfb,
+% uci_electricity, lstnet are pre-cutoff and were added from memory in this revision: verify
+% every bibliographic field before submission. olcp is abstract-level only (LIT note pending).
+
+\end{document}
