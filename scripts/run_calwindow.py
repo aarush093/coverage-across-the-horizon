@@ -46,7 +46,7 @@ import numpy as np
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 
 from coverage_horizon import run_backbone
-from coverage_horizon.calibration import calibrate, metrics, joint_layers
+from coverage_horizon.calibration import calibrate_with_feedback, metrics, joint_layers
 from coverage_horizon.config import (ALPHA, DATASETS, HORIZONS, K_BUCKETS,
                                      GAMMA, SEED, ECL_STRIDE)
 from coverage_horizon.data import load_electricity
@@ -66,12 +66,13 @@ def grid_stats(cell, alpha=ALPHA):
                 frac_below_80=float(np.mean(cell < 0.80)))
 
 
-def one_config(Rca, Rts, tag, fracs, res):
+def one_config(Rca, Rts, tag, fracs, res, stride, feedback):
     n_full = Rca.shape[0]
     for f in fracs:
         k = max(2, int(round(n_full * f)))
         Rc = Rca[-k:]
-        half, _, _ = calibrate(Rc, Rts, alpha=ALPHA, K=K_REF, gamma=GAMMA)
+        half, _, _ = calibrate_with_feedback(Rc, Rts, stride, feedback=feedback,
+                                             alpha=ALPHA, K=K_REF, gamma=GAMMA)
         jl = joint_layers(Rc, Rts, alpha=ALPHA)
         for m in SCORED:
             mt = metrics(Rts, half[m], K_REF, alpha=ALPHA)
@@ -79,7 +80,8 @@ def one_config(Rca, Rts, tag, fracs, res):
             mt.pop("cov_by_h", None)
             mt.pop("width_by_h", None)
             res["rows"].append(dict(**tag, frac=f, n_cal=int(k), n_cal_full=int(n_full),
-                                    method=m, **mt, **grid_stats(cell)))
+                                    method=m, feedback=feedback, **mt,
+                                    **grid_stats(cell)))
         res["joint"].append(dict(**tag, frac=f, n_cal=int(k),
                                  **{key: dict(joint=jl[key]["joint"],
                                               width_ratio=jl[key]["width_ratio"])
@@ -95,13 +97,19 @@ def main():
     ap.add_argument("--backbones", nargs="+", default=["dlinear", "nlinear"])
     ap.add_argument("--horizons", nargs="+", type=int, default=HORIZONS)
     ap.add_argument("--chunk", type=int, default=1200)
-    ap.add_argument("--out", default="calwindow.json")
+    ap.add_argument("--feedback", choices=["realised", "instant"], default="realised",
+                    help="realised = protocol of record (D015); instant = oracle bound")
+    ap.add_argument("--out", default=None,
+                    help="default: calwindow.json for realised, calwindow_instant.json otherwise")
     args = ap.parse_args()
 
     os.makedirs(OUT, exist_ok=True)
-    path = os.path.join(OUT, args.out)
+    out_name = args.out or ("calwindow.json" if args.feedback == "realised"
+                            else "calwindow_instant.json")
+    path = os.path.join(OUT, out_name)
     res = {"config": dict(seed=SEED, alpha=ALPHA, K_ref=K_REF, gamma=GAMMA,
-                          fracs=args.fracs, truncation="most recent paths kept"),
+                          fracs=args.fracs, feedback=args.feedback,
+                          truncation="most recent paths kept"),
            "rows": [], "joint": []}
 
     def flush():
@@ -115,7 +123,7 @@ def main():
                     r = run_backbone(ds, H, kind=kind, point_eval=False)
                     one_config(r["Rca"], r["Rts"],
                                dict(surface="ETT", backbone=NICE[kind], dataset=ds, H=H),
-                               args.fracs, res)
+                               args.fracs, res, r["stride"], args.feedback)
                     print("ETT %-8s %s H=%-4d n_cal_full=%d" % (NICE[kind], ds, H, r["n_cal"]), flush=True)
                     del r
                     gc.collect()
@@ -129,7 +137,8 @@ def main():
                                  stride=ECL_STRIDE, chunk=args.chunk, point_eval=False)
                 one_config(r["Rca"], r["Rts"],
                            dict(surface="Electricity", backbone=NICE[kind],
-                                dataset="Electricity", H=H), args.fracs, res)
+                                dataset="Electricity", H=H), args.fracs, res,
+                           r["stride"], args.feedback)
                 print("ECL %-8s H=%-4d n_cal_full=%d" % (NICE[kind], H, r["n_cal"]), flush=True)
                 del r
                 gc.collect()

@@ -1,5 +1,5 @@
 DOC: SUMMARY | OWNER: generated | CADENCE: regenerate before any writing
-STATUS: generated 2026-08-30 by `scripts/make_summary.py` | SUPERSEDES: any hand-typed number
+STATUS: generated 2026-09-01 by `scripts/make_summary.py` | SUPERSEDES: any hand-typed number
 # RESULTS SUMMARY -- every number generated, none typed
 Regenerate this file before quoting anything. If a number in the paper disagrees with this file, this file is right.
 

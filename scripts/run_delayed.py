@@ -1,4 +1,4 @@
-"""Delay-aware re-run of the two adaptive arms (EXP_S6_001 / RV20).
+"""Delay-aware re-run of the two adaptive arms (EXP_S6_001 / RV20 / FR07).
 
 WHY THIS EXISTS. In `calibration/conditional.py` the ACI and Proposed loops
 update every cell with path t's outcomes at ALL horizon steps before path t+1
@@ -8,7 +8,8 @@ the paper (second half of test block -> first-half intervals bit-identical)
 cannot detect this, because the leaked information lies inside the first half.
 
 WHAT THIS DOES. Re-runs ACI and Proposed with feedback delayed until it is
-realised. Path t (forecast origin at t*stride) contributes its cell-(k,c)
+realised, via `coverage_horizon.calibration.calibrate_delayed`. Path t (forecast
+origin at t*stride) contributes its cell-(k,c)
 outcome to the tracker only when the cell's LAST horizon step has been
 observed, i.e. when (t' - t) * stride >= edge_hi[k] for the path t' about to
 be issued. Everything else (pool, quantile, gamma, clamps, one update per path
@@ -32,64 +33,13 @@ import numpy as np
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 from coverage_horizon import run_backbone, calibrate, metrics
-from coverage_horizon.calibration.conditional import buckets, _scale_of
+from coverage_horizon.calibration import calibrate_delayed
 from coverage_horizon.config import (SEED, DATASETS, HORIZONS, K_BUCKETS, ALPHA,
                                      GAMMA, STRIDE)
 
 np.random.seed(SEED)
 OUT = os.path.join(os.path.dirname(__file__), "..", "results")
 NICE = {"dlinear": "DLinear", "nlinear": "NLinear"}
-
-
-def calibrate_delayed(Rca, Rts, stride, alpha=ALPHA, K=K_BUCKETS, gamma=GAMMA,
-                      scale_how="mad"):
-    """Half-widths for ACI and Proposed with realised-only feedback."""
-    n_cal, H, C = Rca.shape
-    n_ts = Rts.shape[0]
-    scale = _scale_of(Rca, scale_how)
-    Sca = np.abs(Rca) / scale
-    bid, edges = buckets(H, K)
-    ks = np.unique(bid)
-    # last horizon step (1-indexed) of each bucket; paths become usable when
-    # (t_issue - t_path) * stride >= that step.
-    edge_hi = {k: int(np.max(np.where(bid == k)[0]) + 1) for k in ks}
-    lag = {k: int(np.ceil(edge_hi[k] / stride)) for k in ks}   # in paths
-    lag_full = int(np.ceil(H / stride))
-
-    def idx_q(v, n, a):
-        j = int(np.ceil((n + 1) * (1 - min(max(a, 1e-4), 0.5)))) - 1
-        return v[min(max(j, 0), n - 1)]
-
-    # --- ACI, unconditional, delayed by the full horizon ---
-    flat = np.sort(Sca.ravel()); nf = len(flat)
-    a_t = alpha
-    hA = np.zeros((n_ts, H, C))
-    for t in range(n_ts):
-        # apply the update from the path whose outcome just completed
-        t_done = t - lag_full
-        if t_done >= 0:
-            miss = 1.0 - (np.abs(Rts[t_done]) <= hA[t_done]).mean()
-            a_t += gamma * (alpha - miss)
-        hA[t] = idx_q(flat, nf, a_t) * scale[0, 0][None, :]
-
-    # --- Proposed, per-cell, each cell delayed by its own bucket edge ---
-    alpha_t = np.full((len(ks), C), alpha)
-    half = np.zeros((n_ts, H, C))
-    pool = {(k, c): np.sort(Sca[:, bid == k, c].ravel()) for k in ks for c in range(C)}
-    npool = {key: len(v) for key, v in pool.items()}
-    for t in range(n_ts):
-        for k in ks:
-            t_done = t - lag[k]
-            if t_done < 0:
-                continue
-            m = bid == k
-            cov = np.abs(Rts[t_done][m]) <= half[t_done][m]      # (steps_k, C)
-            for c in range(C):
-                alpha_t[k, c] += gamma * (alpha - (1.0 - cov[:, c].mean()))
-        qt = np.array([[idx_q(pool[(k, c)], npool[(k, c)], alpha_t[k, c])
-                        for c in range(C)] for k in ks])
-        half[t] = qt[bid] * scale[0, 0][None, :]
-    return {"ACI-delayed": hA, "Proposed-delayed": half}, edges, lag, lag_full
 
 
 def run_surface(cells, out_path, loader):
@@ -105,9 +55,10 @@ def run_surface(cells, out_path, loader):
         r = loader(kind, ds, H)
         Rca, Rts, st = r["Rca"], r["Rts"], r["stride"]
         half0, edges, _ = calibrate(Rca, Rts, K=K_BUCKETS)
-        half1, _, lag, lag_full = calibrate_delayed(Rca, Rts, st, K=K_BUCKETS)
+        delayed, _, lag, lag_full = calibrate_delayed(Rca, Rts, st, K=K_BUCKETS)
         allh = {**{m: half0[m] for m in ["Gaussian", "Global", "MSCP", "CondC", "Cond",
-                                          "ACI", "Proposed"]}, **half1}
+                                          "ACI", "Proposed"]},
+                "ACI-delayed": delayed["ACI"], "Proposed-delayed": delayed["Proposed"]}
         for m, h in allh.items():
             mm = metrics(Rts, h, K_BUCKETS, edges)
             cell = np.array(mm["cell"]).ravel()             # D014 grid statistics
@@ -123,7 +74,7 @@ def run_surface(cells, out_path, loader):
                              cell_err=round(mm["mean_abs_cell_err"], 4),
                              width=round(mm["width"], 4),
                              winkler=round(mm["winkler"], 4)))
-        del Rca, Rts, half0, half1; gc.collect()
+        del Rca, Rts, half0, delayed; gc.collect()
         print(f"  {kind:8s} {ds:7s} H={H:4d}  done  ({time.time()-t0:5.0f}s)", flush=True)
         with open(out_path, "w") as f:
             json.dump({"config": dict(seed=SEED, alpha=ALPHA, K=K_BUCKETS, gamma=GAMMA,

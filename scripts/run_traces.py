@@ -35,9 +35,16 @@ WHAT IS REPORTED per method, per config:
                   recovers. This is the number that decides whether adaptation works:
                   a static method has no mechanism to produce a finite value here.
 
+FEEDBACK PROTOCOL. The adaptive arms use realised feedback by default (D015): a
+path's outcome reaches its cell's tracker only once that cell's last horizon step
+has actually been observed. `--feedback instant` reproduces the earlier
+oracle-feedback numbers, which consumed a path's full-horizon outcome before the
+next path was issued (FR07) and are reported in the paper only as an upper bound.
+
 Deterministic, CPU only, writes results/traces.json, modifies nothing.
 
 Run:  python scripts/run_traces.py
+      python scripts/run_traces.py --feedback instant
       python scripts/run_traces.py --surface ett --window 20
 """
 import argparse
@@ -51,7 +58,7 @@ import numpy as np
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 
 from coverage_horizon import run_backbone                                  # noqa: E402
-from coverage_horizon.calibration import calibrate                         # noqa: E402
+from coverage_horizon.calibration import calibrate_with_feedback           # noqa: E402
 from coverage_horizon.config import (ALPHA, DATASETS, HORIZONS, K_BUCKETS,  # noqa: E402
                                      GAMMA, SEED, ECL_STRIDE)
 from coverage_horizon.data import load_electricity                         # noqa: E402
@@ -95,12 +102,13 @@ def trace_stats(cov_by_path, w):
     return out
 
 
-def one_config(Rca, Rts, tag, w):
-    half, _, _ = calibrate(Rca, Rts, alpha=ALPHA, K=K_BUCKETS, gamma=GAMMA)
+def one_config(Rca, Rts, tag, w, stride, feedback):
+    half, _, _ = calibrate_with_feedback(Rca, Rts, stride, feedback=feedback,
+                                         alpha=ALPHA, K=K_BUCKETS, gamma=GAMMA)
     rows = []
     for m in TRACED:
         cov = (np.abs(Rts) <= half[m]).mean(axis=(1, 2))     # coverage per test path
-        rows.append(dict(**tag, method=m, **trace_stats(cov, w),
+        rows.append(dict(**tag, method=m, feedback=feedback, **trace_stats(cov, w),
                          cov_by_path=[round(float(x), 4) for x in cov]))
     del half
     gc.collect()
@@ -115,14 +123,19 @@ def main():
     ap.add_argument("--window", type=int, default=30,
                     help="rolling window in test paths; paths are one per day")
     ap.add_argument("--chunk", type=int, default=1200)
-    ap.add_argument("--out", default="traces.json")
+    ap.add_argument("--feedback", choices=["realised", "instant"], default="realised",
+                    help="realised = protocol of record (D015); instant = oracle bound")
+    ap.add_argument("--out", default=None,
+                    help="default: traces.json for realised, traces_instant.json for instant")
     args = ap.parse_args()
 
     os.makedirs(OUT, exist_ok=True)
-    path = os.path.join(OUT, args.out)
+    out_name = args.out or ("traces.json" if args.feedback == "realised"
+                            else "traces_instant.json")
+    path = os.path.join(OUT, out_name)
     res = {"config": dict(seed=SEED, alpha=ALPHA, K=K_BUCKETS, gamma=GAMMA,
                           window=args.window, floor=FLOOR, recover_to=RECOVER_TO,
-                          methods=list(TRACED)),
+                          feedback=args.feedback, methods=list(TRACED)),
            "rows": []}
 
     def flush():
@@ -136,7 +149,8 @@ def main():
                     r = run_backbone(ds, H, kind=kind, point_eval=False)
                     res["rows"] += one_config(r["Rca"], r["Rts"],
                                               dict(surface="ETT", backbone=NICE[kind],
-                                                   dataset=ds, H=H), args.window)
+                                                   dataset=ds, H=H), args.window,
+                                              r["stride"], args.feedback)
                     print(f"ETT {NICE[kind]:8s} {ds} H={H:<4d} n_paths={r['n_test']}", flush=True)
                     del r
                     gc.collect()
@@ -150,7 +164,8 @@ def main():
                                  stride=ECL_STRIDE, chunk=args.chunk, point_eval=False)
                 res["rows"] += one_config(r["Rca"], r["Rts"],
                                           dict(surface="Electricity", backbone=NICE[kind],
-                                               dataset="Electricity", H=H), args.window)
+                                               dataset="Electricity", H=H), args.window,
+                                          r["stride"], args.feedback)
                 print(f"ECL {NICE[kind]:8s} H={H:<4d} n_paths={r['n_test']}", flush=True)
                 del r
                 gc.collect()
@@ -161,7 +176,8 @@ def main():
         rows = [x for x in res["rows"] if x["surface"] == surf and "min_roll" in x]
         if not rows:
             continue
-        print(f"\n{surf}  rolling window = {args.window} paths")
+        print(f"\n{surf}  rolling window = {args.window} paths  "
+              f"feedback = {args.feedback}")
         print(f"  {'method':<10}{'mean':>8}{'worst window':>15}{'% below .85':>13}"
               f"{'longest dip':>13}{'recovered':>11}")
         for m in TRACED:

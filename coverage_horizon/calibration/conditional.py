@@ -109,3 +109,85 @@ def calibrate(Rca, Rts, alpha=ALPHA, K=K_BUCKETS, gamma=GAMMA, scale_how="mad"):
                 alpha_t[k, c] += gamma * (alpha - (1.0 - cov[m, c].mean()))
     out["Proposed"] = half
     return out, edges, scale
+
+
+# --------------------------------------------------------------------------
+# Realised feedback (FR07 / D015). The loops above update each cell with path
+# t's outcomes at ALL horizon steps before path t+1 is issued; with stride s
+# and horizon H that consumes outcomes realised up to H - s steps after the
+# next forecast origin. The functions below apply a path's outcome only once
+# it has actually been observed. Everything else -- pool, quantile rule, gamma,
+# clamps, one update per path per cell -- is identical, so the delay is the
+# only variable. `calibrate` is deliberately left untouched so that every
+# number already committed under the instant-feedback protocol still
+# reproduces bit-for-bit.
+# --------------------------------------------------------------------------
+
+def calibrate_delayed(Rca, Rts, stride, alpha=ALPHA, K=K_BUCKETS, gamma=GAMMA,
+                      scale_how="mad"):
+    """Adaptive half-widths using only feedback that has been realised.
+
+    Returns ({"ACI": ..., "Proposed": ...}, edges, lag_by_bucket, lag_full).
+    A path's outcome in cell (k, c) reaches the tracker once the cell's last
+    horizon step has been observed, i.e. after ceil(edge_hi[k] / stride) paths.
+    The unconditional ACI arm waits the full horizon.
+    """
+    n_cal, H, C = Rca.shape
+    n_ts = Rts.shape[0]
+    scale = _scale_of(Rca, scale_how)
+    Sca = np.abs(Rca) / scale
+    bid, edges = buckets(H, K)
+    ks = np.unique(bid)
+    edge_hi = {k: int(np.max(np.where(bid == k)[0]) + 1) for k in ks}
+    lag = {int(k): int(np.ceil(edge_hi[k] / stride)) for k in ks}
+    lag_full = int(np.ceil(H / stride))
+
+    def idx_q(v, n, a):
+        j = int(np.ceil((n + 1) * (1 - min(max(a, 1e-4), 0.5)))) - 1
+        return v[min(max(j, 0), n - 1)]
+
+    flat = np.sort(Sca.ravel()); nf = len(flat)
+    a_t = alpha
+    hA = np.zeros((n_ts, H, C))
+    for t in range(n_ts):
+        t_done = t - lag_full
+        if t_done >= 0:
+            miss = 1.0 - (np.abs(Rts[t_done]) <= hA[t_done]).mean()
+            a_t += gamma * (alpha - miss)
+        hA[t] = idx_q(flat, nf, a_t) * scale[0, 0][None, :]
+
+    alpha_t = np.full((len(ks), C), alpha)
+    half = np.zeros((n_ts, H, C))
+    pool = {(k, c): np.sort(Sca[:, bid == k, c].ravel()) for k in ks for c in range(C)}
+    npool = {key: len(v) for key, v in pool.items()}
+    for t in range(n_ts):
+        for k in ks:
+            t_done = t - lag[int(k)]
+            if t_done < 0:
+                continue
+            m = bid == k
+            cov = np.abs(Rts[t_done][m]) <= half[t_done][m]
+            for c in range(C):
+                alpha_t[k, c] += gamma * (alpha - (1.0 - cov[:, c].mean()))
+        qt = np.array([[idx_q(pool[(k, c)], npool[(k, c)], alpha_t[k, c])
+                        for c in range(C)] for k in ks])
+        half[t] = qt[bid] * scale[0, 0][None, :]
+
+    return {"ACI": hA, "Proposed": half}, edges, lag, lag_full
+
+
+def calibrate_with_feedback(Rca, Rts, stride, feedback="realised", **kw):
+    """All seven methods, with the adaptive arms under the chosen protocol.
+
+    feedback="realised" is the protocol of record (D015); "instant" reproduces
+    the oracle upper bound reported in the paper's appendix. Static methods are
+    identical either way, so they always come from `calibrate`.
+    """
+    half, edges, scale = calibrate(Rca, Rts, **kw)
+    if feedback == "instant":
+        return half, edges, scale
+    if feedback != "realised":
+        raise ValueError(f"feedback must be 'realised' or 'instant', got {feedback!r}")
+    adaptive, _, _, _ = calibrate_delayed(Rca, Rts, stride, **kw)
+    half.update(adaptive)
+    return half, edges, scale
