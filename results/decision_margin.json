@@ -1,0 +1,2182 @@
+{
+ "config": {
+  "seed": 2026,
+  "alpha": 0.1,
+  "peak_q": 0.95,
+  "feedback": "realised",
+  "margin_qs": [
+   0.0,
+   0.5,
+   0.7,
+   0.8,
+   0.9,
+   0.95,
+   0.975,
+   0.99,
+   0.999
+  ],
+  "note": "margin tuned per channel on the calibration block at each ratio; no test data used"
+ },
+ "rows": [
+  {
+   "backbone": "DLinear",
+   "H": 96,
+   "ratio": 2.0,
+   "rule": "FlagNone",
+   "norm_cost": 1.0,
+   "flag_rate": 0.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 96,
+   "ratio": 2.0,
+   "rule": "FlagAll",
+   "norm_cost": 2.691332184191086,
+   "flag_rate": 1.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 96,
+   "ratio": 2.0,
+   "rule": "Point",
+   "norm_cost": 0.414857793646885,
+   "flag_rate": 0.14392939814814815,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 96,
+   "ratio": 2.0,
+   "rule": "Point+margin",
+   "norm_cost": 0.4140359517360256,
+   "flag_rate": 0.1468431712962963,
+   "margin_mean": 0.02894595130757798
+  },
+  {
+   "backbone": "DLinear",
+   "H": 96,
+   "ratio": 2.0,
+   "rule": "Interval:Global",
+   "norm_cost": 0.6323781088401872,
+   "flag_rate": 0.3340740740740741,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 96,
+   "ratio": 2.0,
+   "rule": "Interval:Proposed",
+   "norm_cost": 0.6606439300664861,
+   "flag_rate": 0.347109375,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 96,
+   "ratio": 5.0,
+   "rule": "FlagNone",
+   "norm_cost": 1.0,
+   "flag_rate": 0.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 96,
+   "ratio": 5.0,
+   "rule": "FlagAll",
+   "norm_cost": 1.0765328736764344,
+   "flag_rate": 1.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 96,
+   "ratio": 5.0,
+   "rule": "Point",
+   "norm_cost": 0.34815562669293276,
+   "flag_rate": 0.14392939814814815,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 96,
+   "ratio": 5.0,
+   "rule": "Point+margin",
+   "norm_cost": 0.25578552080768285,
+   "flag_rate": 0.21919077932098766,
+   "margin_mean": 0.1890160426075108
+  },
+  {
+   "backbone": "DLinear",
+   "H": 96,
+   "ratio": 5.0,
+   "rule": "Interval:Global",
+   "norm_cost": 0.2794459492735779,
+   "flag_rate": 0.3340740740740741,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 96,
+   "ratio": 5.0,
+   "rule": "Interval:Proposed",
+   "norm_cost": 0.2854186161044078,
+   "flag_rate": 0.347109375,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 96,
+   "ratio": 10.0,
+   "rule": "FlagNone",
+   "norm_cost": 1.0,
+   "flag_rate": 0.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 96,
+   "ratio": 10.0,
+   "rule": "FlagAll",
+   "norm_cost": 0.5382664368382172,
+   "flag_rate": 1.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 96,
+   "ratio": 10.0,
+   "rule": "Point",
+   "norm_cost": 0.32592157104161534,
+   "flag_rate": 0.14392939814814815,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 96,
+   "ratio": 10.0,
+   "rule": "Point+margin",
+   "norm_cost": 0.166933637035213,
+   "flag_rate": 0.27460551697530866,
+   "margin_mean": 0.30024393587849807
+  },
+  {
+   "backbone": "DLinear",
+   "H": 96,
+   "ratio": 10.0,
+   "rule": "Interval:Global",
+   "norm_cost": 0.1618018960847082,
+   "flag_rate": 0.3340740740740741,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 96,
+   "ratio": 10.0,
+   "rule": "Interval:Proposed",
+   "norm_cost": 0.16034351145038167,
+   "flag_rate": 0.347109375,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 96,
+   "ratio": 20.0,
+   "rule": "FlagNone",
+   "norm_cost": 1.0,
+   "flag_rate": 0.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 96,
+   "ratio": 20.0,
+   "rule": "FlagAll",
+   "norm_cost": 0.2691332184191086,
+   "flag_rate": 1.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 96,
+   "ratio": 20.0,
+   "rule": "Point",
+   "norm_cost": 0.31480454321595663,
+   "flag_rate": 0.14392939814814815,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 96,
+   "ratio": 20.0,
+   "rule": "Point+margin",
+   "norm_cost": 0.10329783304604777,
+   "flag_rate": 0.3546971450617284,
+   "margin_mean": 0.4524652124370297
+  },
+  {
+   "backbone": "DLinear",
+   "H": 96,
+   "ratio": 20.0,
+   "rule": "Interval:Global",
+   "norm_cost": 0.10297986949027334,
+   "flag_rate": 0.3340740740740741,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 96,
+   "ratio": 20.0,
+   "rule": "Interval:Proposed",
+   "norm_cost": 0.09780595912336863,
+   "flag_rate": 0.347109375,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 96,
+   "ratio": 50.0,
+   "rule": "FlagNone",
+   "norm_cost": 1.0,
+   "flag_rate": 0.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 96,
+   "ratio": 50.0,
+   "rule": "FlagAll",
+   "norm_cost": 0.10765328736764344,
+   "flag_rate": 1.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 96,
+   "ratio": 50.0,
+   "rule": "Point",
+   "norm_cost": 0.30813432652056144,
+   "flag_rate": 0.14392939814814815,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 96,
+   "ratio": 50.0,
+   "rule": "Point+margin",
+   "norm_cost": 0.05483390790445703,
+   "flag_rate": 0.4199170524691358,
+   "margin_mean": 0.5873529159365244
+  },
+  {
+   "backbone": "DLinear",
+   "H": 96,
+   "ratio": 50.0,
+   "rule": "Interval:Global",
+   "norm_cost": 0.06768665353361242,
+   "flag_rate": 0.3340740740740741,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 96,
+   "ratio": 50.0,
+   "rule": "Interval:Proposed",
+   "norm_cost": 0.0602834277271608,
+   "flag_rate": 0.347109375,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 192,
+   "ratio": 2.0,
+   "rule": "FlagNone",
+   "norm_cost": 1.0,
+   "flag_rate": 0.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 192,
+   "ratio": 2.0,
+   "rule": "FlagAll",
+   "norm_cost": 2.6436806643249704,
+   "flag_rate": 1.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 192,
+   "ratio": 2.0,
+   "rule": "Point",
+   "norm_cost": 0.4496998736472689,
+   "flag_rate": 0.14416912342767296,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 192,
+   "ratio": 2.0,
+   "rule": "Point+margin",
+   "norm_cost": 0.4472052567679033,
+   "flag_rate": 0.1481633254716981,
+   "margin_mean": 0.02625885529335463
+  },
+  {
+   "backbone": "DLinear",
+   "H": 192,
+   "ratio": 2.0,
+   "rule": "Interval:Global",
+   "norm_cost": 0.666697559754956,
+   "flag_rate": 0.34700176886792455,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 192,
+   "ratio": 2.0,
+   "rule": "Interval:Proposed",
+   "norm_cost": 0.7198074124876042,
+   "flag_rate": 0.36986143867924526,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 192,
+   "ratio": 5.0,
+   "rule": "FlagNone",
+   "norm_cost": 1.0,
+   "flag_rate": 0.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 192,
+   "ratio": 5.0,
+   "rule": "FlagAll",
+   "norm_cost": 1.0574722657299882,
+   "flag_rate": 1.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 192,
+   "ratio": 5.0,
+   "rule": "Point",
+   "norm_cost": 0.3784712246329129,
+   "flag_rate": 0.14416912342767296,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 192,
+   "ratio": 5.0,
+   "rule": "Point+margin",
+   "norm_cost": 0.2876053840474271,
+   "flag_rate": 0.21955286949685535,
+   "margin_mean": 0.18361606626092372
+  },
+  {
+   "backbone": "DLinear",
+   "H": 192,
+   "ratio": 5.0,
+   "rule": "Interval:Global",
+   "norm_cost": 0.2970129472933021,
+   "flag_rate": 0.34700176886792455,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 192,
+   "ratio": 5.0,
+   "rule": "Interval:Proposed",
+   "norm_cost": 0.31075542868793965,
+   "flag_rate": 0.36986143867924526,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 192,
+   "ratio": 10.0,
+   "rule": "FlagNone",
+   "norm_cost": 1.0,
+   "flag_rate": 0.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 192,
+   "ratio": 10.0,
+   "rule": "FlagAll",
+   "norm_cost": 0.5287361328649941,
+   "flag_rate": 1.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 192,
+   "ratio": 10.0,
+   "rule": "Point",
+   "norm_cost": 0.35472834162812755,
+   "flag_rate": 0.14416912342767296,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 192,
+   "ratio": 10.0,
+   "rule": "Point+margin",
+   "norm_cost": 0.18078233656783968,
+   "flag_rate": 0.2915487421383648,
+   "margin_mean": 0.31767803880092066
+  },
+  {
+   "backbone": "DLinear",
+   "H": 192,
+   "ratio": 10.0,
+   "rule": "Interval:Global",
+   "norm_cost": 0.1737847431394174,
+   "flag_rate": 0.34700176886792455,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 192,
+   "ratio": 10.0,
+   "rule": "Interval:Proposed",
+   "norm_cost": 0.1744047674213848,
+   "flag_rate": 0.36986143867924526,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 192,
+   "ratio": 20.0,
+   "rule": "FlagNone",
+   "norm_cost": 1.0,
+   "flag_rate": 0.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 192,
+   "ratio": 20.0,
+   "rule": "FlagAll",
+   "norm_cost": 0.26436806643249705,
+   "flag_rate": 1.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 192,
+   "ratio": 20.0,
+   "rule": "Point",
+   "norm_cost": 0.3428569001257349,
+   "flag_rate": 0.14416912342767296,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 192,
+   "ratio": 20.0,
+   "rule": "Point+margin",
+   "norm_cost": 0.11178046135738051,
+   "flag_rate": 0.36686173349056606,
+   "margin_mean": 0.4640851190205384
+  },
+  {
+   "backbone": "DLinear",
+   "H": 192,
+   "ratio": 20.0,
+   "rule": "Interval:Global",
+   "norm_cost": 0.1121706410624751,
+   "flag_rate": 0.34700176886792455,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 192,
+   "ratio": 20.0,
+   "rule": "Interval:Proposed",
+   "norm_cost": 0.1062294367881074,
+   "flag_rate": 0.36986143867924526,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 192,
+   "ratio": 50.0,
+   "rule": "FlagNone",
+   "norm_cost": 1.0,
+   "flag_rate": 0.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 192,
+   "ratio": 50.0,
+   "rule": "FlagAll",
+   "norm_cost": 0.10574722657299883,
+   "flag_rate": 1.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 192,
+   "ratio": 50.0,
+   "rule": "Point",
+   "norm_cost": 0.3357340352242993,
+   "flag_rate": 0.14416912342767296,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 192,
+   "ratio": 50.0,
+   "rule": "Point+margin",
+   "norm_cost": 0.058313917027343475,
+   "flag_rate": 0.4296840605345912,
+   "margin_mean": 0.5940441722736101
+  },
+  {
+   "backbone": "DLinear",
+   "H": 192,
+   "ratio": 50.0,
+   "rule": "Interval:Global",
+   "norm_cost": 0.0752021798163097,
+   "flag_rate": 0.34700176886792455,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 192,
+   "ratio": 50.0,
+   "rule": "Interval:Proposed",
+   "norm_cost": 0.06532423840814094,
+   "flag_rate": 0.36986143867924526,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 336,
+   "ratio": 2.0,
+   "rule": "FlagNone",
+   "norm_cost": 1.0,
+   "flag_rate": 0.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 336,
+   "ratio": 2.0,
+   "rule": "FlagAll",
+   "norm_cost": 2.4868316351453283,
+   "flag_rate": 1.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 336,
+   "ratio": 2.0,
+   "rule": "Point",
+   "norm_cost": 0.4816990970806586,
+   "flag_rate": 0.14932327785483127,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 336,
+   "ratio": 2.0,
+   "rule": "Point+margin",
+   "norm_cost": 0.47876560172471233,
+   "flag_rate": 0.15319550392972722,
+   "margin_mean": 0.022179758254671125
+  },
+  {
+   "backbone": "DLinear",
+   "H": 336,
+   "ratio": 2.0,
+   "rule": "Interval:Global",
+   "norm_cost": 0.6846565851317786,
+   "flag_rate": 0.36959286870087843,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 336,
+   "ratio": 2.0,
+   "rule": "Interval:Proposed",
+   "norm_cost": 0.7674529596456676,
+   "flag_rate": 0.40476479426722145,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 336,
+   "ratio": 5.0,
+   "rule": "FlagNone",
+   "norm_cost": 1.0,
+   "flag_rate": 0.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 336,
+   "ratio": 5.0,
+   "rule": "FlagAll",
+   "norm_cost": 0.9947326540581314,
+   "flag_rate": 1.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 336,
+   "ratio": 5.0,
+   "rule": "Point",
+   "norm_cost": 0.40695788160036456,
+   "flag_rate": 0.14932327785483127,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 336,
+   "ratio": 5.0,
+   "rule": "Point+margin",
+   "norm_cost": 0.3179418755383253,
+   "flag_rate": 0.21325416088765603,
+   "margin_mean": 0.1542318269540237
+  },
+  {
+   "backbone": "DLinear",
+   "H": 336,
+   "ratio": 5.0,
+   "rule": "Interval:Global",
+   "norm_cost": 0.30616059916146393,
+   "flag_rate": 0.36959286870087843,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 336,
+   "ratio": 5.0,
+   "rule": "Interval:Proposed",
+   "norm_cost": 0.33037665079236306,
+   "flag_rate": 0.40476479426722145,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 336,
+   "ratio": 10.0,
+   "rule": "FlagNone",
+   "norm_cost": 1.0,
+   "flag_rate": 0.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 336,
+   "ratio": 10.0,
+   "rule": "FlagAll",
+   "norm_cost": 0.4973663270290657,
+   "flag_rate": 1.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 336,
+   "ratio": 10.0,
+   "rule": "Point",
+   "norm_cost": 0.3820441431069332,
+   "flag_rate": 0.14932327785483127,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 336,
+   "ratio": 10.0,
+   "rule": "Point+margin",
+   "norm_cost": 0.1922146293301205,
+   "flag_rate": 0.3065788257050393,
+   "margin_mean": 0.31741487575889943
+  },
+  {
+   "backbone": "DLinear",
+   "H": 336,
+   "ratio": 10.0,
+   "rule": "Interval:Global",
+   "norm_cost": 0.17999527050469238,
+   "flag_rate": 0.36959286870087843,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 336,
+   "ratio": 10.0,
+   "rule": "Interval:Proposed",
+   "norm_cost": 0.18468454784126156,
+   "flag_rate": 0.40476479426722145,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 336,
+   "ratio": 20.0,
+   "rule": "FlagNone",
+   "norm_cost": 1.0,
+   "flag_rate": 0.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 336,
+   "ratio": 20.0,
+   "rule": "FlagAll",
+   "norm_cost": 0.24868316351453285,
+   "flag_rate": 1.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 336,
+   "ratio": 20.0,
+   "rule": "Point",
+   "norm_cost": 0.3695872738602175,
+   "flag_rate": 0.14932327785483127,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 336,
+   "ratio": 20.0,
+   "rule": "Point+margin",
+   "norm_cost": 0.11815254521069557,
+   "flag_rate": 0.37584980351363845,
+   "margin_mean": 0.45532402972493535
+  },
+  {
+   "backbone": "DLinear",
+   "H": 336,
+   "ratio": 20.0,
+   "rule": "Interval:Global",
+   "norm_cost": 0.11691260617630661,
+   "flag_rate": 0.36959286870087843,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 336,
+   "ratio": 20.0,
+   "rule": "Interval:Proposed",
+   "norm_cost": 0.11183849636571082,
+   "flag_rate": 0.40476479426722145,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 336,
+   "ratio": 50.0,
+   "rule": "FlagNone",
+   "norm_cost": 1.0,
+   "flag_rate": 0.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 336,
+   "ratio": 50.0,
+   "rule": "FlagAll",
+   "norm_cost": 0.09947326540581314,
+   "flag_rate": 1.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 336,
+   "ratio": 50.0,
+   "rule": "Point",
+   "norm_cost": 0.3621131523121881,
+   "flag_rate": 0.14932327785483127,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 336,
+   "ratio": 50.0,
+   "rule": "Point+margin",
+   "norm_cost": 0.056859718681333854,
+   "flag_rate": 0.44822526583448913,
+   "margin_mean": 0.606867192898183
+  },
+  {
+   "backbone": "DLinear",
+   "H": 336,
+   "ratio": 50.0,
+   "rule": "Interval:Global",
+   "norm_cost": 0.07906300757927515,
+   "flag_rate": 0.36959286870087843,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 336,
+   "ratio": 50.0,
+   "rule": "Interval:Proposed",
+   "norm_cost": 0.06813086548038036,
+   "flag_rate": 0.40476479426722145,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 720,
+   "ratio": 2.0,
+   "rule": "FlagNone",
+   "norm_cost": 1.0,
+   "flag_rate": 0.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 720,
+   "ratio": 2.0,
+   "rule": "FlagAll",
+   "norm_cost": 2.234024940383067,
+   "flag_rate": 1.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 720,
+   "ratio": 2.0,
+   "rule": "Point",
+   "norm_cost": 0.5151110837530968,
+   "flag_rate": 0.16328947368421054,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 720,
+   "ratio": 2.0,
+   "rule": "Point+margin",
+   "norm_cost": 0.5098348952716557,
+   "flag_rate": 0.16886228070175438,
+   "margin_mean": 0.014189679852030615
+  },
+  {
+   "backbone": "DLinear",
+   "H": 720,
+   "ratio": 2.0,
+   "rule": "Interval:Global",
+   "norm_cost": 0.7174557099950996,
+   "flag_rate": 0.420703216374269,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 720,
+   "ratio": 2.0,
+   "rule": "Interval:Proposed",
+   "norm_cost": 0.8095723649235792,
+   "flag_rate": 0.4608226608187134,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 720,
+   "ratio": 5.0,
+   "rule": "FlagNone",
+   "norm_cost": 1.0,
+   "flag_rate": 0.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 720,
+   "ratio": 5.0,
+   "rule": "FlagAll",
+   "norm_cost": 0.8936099761532269,
+   "flag_rate": 1.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 720,
+   "ratio": 5.0,
+   "rule": "Point",
+   "norm_cost": 0.43351386958061494,
+   "flag_rate": 0.16328947368421054,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 720,
+   "ratio": 5.0,
+   "rule": "Point+margin",
+   "norm_cost": 0.36348957513092545,
+   "flag_rate": 0.21131608187134504,
+   "margin_mean": 0.1064366555823987
+  },
+  {
+   "backbone": "DLinear",
+   "H": 720,
+   "ratio": 5.0,
+   "rule": "Interval:Global",
+   "norm_cost": 0.31387933356942943,
+   "flag_rate": 0.420703216374269,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 720,
+   "ratio": 5.0,
+   "rule": "Interval:Proposed",
+   "norm_cost": 0.34369763283004356,
+   "flag_rate": 0.4608226608187134,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 720,
+   "ratio": 10.0,
+   "rule": "FlagNone",
+   "norm_cost": 1.0,
+   "flag_rate": 0.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 720,
+   "ratio": 10.0,
+   "rule": "FlagAll",
+   "norm_cost": 0.44680498807661345,
+   "flag_rate": 1.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 720,
+   "ratio": 10.0,
+   "rule": "Point",
+   "norm_cost": 0.4063147981897877,
+   "flag_rate": 0.16328947368421054,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 720,
+   "ratio": 10.0,
+   "rule": "Point+margin",
+   "norm_cost": 0.2115437408016449,
+   "flag_rate": 0.3129672514619883,
+   "margin_mean": 0.2846821263551978
+  },
+  {
+   "backbone": "DLinear",
+   "H": 720,
+   "ratio": 10.0,
+   "rule": "Interval:Global",
+   "norm_cost": 0.17935387476087275,
+   "flag_rate": 0.420703216374269,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 720,
+   "ratio": 10.0,
+   "rule": "Interval:Proposed",
+   "norm_cost": 0.1884060554655317,
+   "flag_rate": 0.4608226608187134,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 720,
+   "ratio": 20.0,
+   "rule": "FlagNone",
+   "norm_cost": 1.0,
+   "flag_rate": 0.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 720,
+   "ratio": 20.0,
+   "rule": "FlagAll",
+   "norm_cost": 0.22340249403830673,
+   "flag_rate": 1.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 720,
+   "ratio": 20.0,
+   "rule": "Point",
+   "norm_cost": 0.39271526249437405,
+   "flag_rate": 0.16328947368421054,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 720,
+   "ratio": 20.0,
+   "rule": "Point+margin",
+   "norm_cost": 0.12064704457499902,
+   "flag_rate": 0.40507587719298244,
+   "margin_mean": 0.454355273669556
+  },
+  {
+   "backbone": "DLinear",
+   "H": 720,
+   "ratio": 20.0,
+   "rule": "Interval:Global",
+   "norm_cost": 0.1120911453565944,
+   "flag_rate": 0.420703216374269,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 720,
+   "ratio": 20.0,
+   "rule": "Interval:Proposed",
+   "norm_cost": 0.11076026678327576,
+   "flag_rate": 0.4608226608187134,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 720,
+   "ratio": 50.0,
+   "rule": "FlagNone",
+   "norm_cost": 1.0,
+   "flag_rate": 0.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 720,
+   "ratio": 50.0,
+   "rule": "FlagAll",
+   "norm_cost": 0.0893609976153227,
+   "flag_rate": 1.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 720,
+   "ratio": 50.0,
+   "rule": "Point",
+   "norm_cost": 0.38455554107712586,
+   "flag_rate": 0.16328947368421054,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 720,
+   "ratio": 50.0,
+   "rule": "Point+margin",
+   "norm_cost": 0.06289328589027286,
+   "flag_rate": 0.48174342105263157,
+   "margin_mean": 0.6184492578862274
+  },
+  {
+   "backbone": "DLinear",
+   "H": 720,
+   "ratio": 50.0,
+   "rule": "Interval:Global",
+   "norm_cost": 0.07173350771402738,
+   "flag_rate": 0.420703216374269,
+   "margin_mean": null
+  },
+  {
+   "backbone": "DLinear",
+   "H": 720,
+   "ratio": 50.0,
+   "rule": "Interval:Proposed",
+   "norm_cost": 0.0641727935739222,
+   "flag_rate": 0.4608226608187134,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 96,
+   "ratio": 2.0,
+   "rule": "FlagNone",
+   "norm_cost": 1.0,
+   "flag_rate": 0.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 96,
+   "ratio": 2.0,
+   "rule": "FlagAll",
+   "norm_cost": 2.691332184191086,
+   "flag_rate": 1.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 96,
+   "ratio": 2.0,
+   "rule": "Point",
+   "norm_cost": 0.41161044077813347,
+   "flag_rate": 0.14602237654320988,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 96,
+   "ratio": 2.0,
+   "rule": "Point+margin",
+   "norm_cost": 0.4095512189115981,
+   "flag_rate": 0.15051311728395061,
+   "margin_mean": 0.028202238648050333
+  },
+  {
+   "backbone": "NLinear",
+   "H": 96,
+   "ratio": 2.0,
+   "rule": "Interval:Global",
+   "norm_cost": 0.6291307559714356,
+   "flag_rate": 0.3323360339506173,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 96,
+   "ratio": 2.0,
+   "rule": "Interval:Proposed",
+   "norm_cost": 0.6524193548387097,
+   "flag_rate": 0.34369309413580246,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 96,
+   "ratio": 5.0,
+   "rule": "FlagNone",
+   "norm_cost": 1.0,
+   "flag_rate": 0.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 96,
+   "ratio": 5.0,
+   "rule": "FlagAll",
+   "norm_cost": 1.0765328736764344,
+   "flag_rate": 1.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 96,
+   "ratio": 5.0,
+   "rule": "Point",
+   "norm_cost": 0.3428859886727407,
+   "flag_rate": 0.14602237654320988,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 96,
+   "ratio": 5.0,
+   "rule": "Point+margin",
+   "norm_cost": 0.2537663137158335,
+   "flag_rate": 0.2286622299382716,
+   "margin_mean": 0.2072803315960199
+  },
+  {
+   "backbone": "NLinear",
+   "H": 96,
+   "ratio": 5.0,
+   "rule": "Interval:Global",
+   "norm_cost": 0.27906673233193796,
+   "flag_rate": 0.3323360339506173,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 96,
+   "ratio": 5.0,
+   "rule": "Interval:Proposed",
+   "norm_cost": 0.28319995075104654,
+   "flag_rate": 0.34369309413580246,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 96,
+   "ratio": 10.0,
+   "rule": "FlagNone",
+   "norm_cost": 1.0,
+   "flag_rate": 0.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 96,
+   "ratio": 10.0,
+   "rule": "FlagAll",
+   "norm_cost": 0.5382664368382172,
+   "flag_rate": 1.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 96,
+   "ratio": 10.0,
+   "rule": "Point",
+   "norm_cost": 0.3199778379709431,
+   "flag_rate": 0.14602237654320988,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 96,
+   "ratio": 10.0,
+   "rule": "Point+margin",
+   "norm_cost": 0.16606377739473036,
+   "flag_rate": 0.2817091049382716,
+   "margin_mean": 0.31185008941589876
+  },
+  {
+   "backbone": "NLinear",
+   "H": 96,
+   "ratio": 10.0,
+   "rule": "Interval:Global",
+   "norm_cost": 0.16237872445210538,
+   "flag_rate": 0.3323360339506173,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 96,
+   "ratio": 10.0,
+   "rule": "Interval:Proposed",
+   "norm_cost": 0.16012681605515883,
+   "flag_rate": 0.34369309413580246,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 96,
+   "ratio": 20.0,
+   "rule": "FlagNone",
+   "norm_cost": 1.0,
+   "flag_rate": 0.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 96,
+   "ratio": 20.0,
+   "rule": "FlagAll",
+   "norm_cost": 0.2691332184191086,
+   "flag_rate": 1.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 96,
+   "ratio": 20.0,
+   "rule": "Point",
+   "norm_cost": 0.30852376262004433,
+   "flag_rate": 0.14602237654320988,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 96,
+   "ratio": 20.0,
+   "rule": "Point+margin",
+   "norm_cost": 0.1044099359763605,
+   "flag_rate": 0.35573109567901234,
+   "margin_mean": 0.4638630371781803
+  },
+  {
+   "backbone": "NLinear",
+   "H": 96,
+   "ratio": 20.0,
+   "rule": "Interval:Global",
+   "norm_cost": 0.10403472051218912,
+   "flag_rate": 0.3323360339506173,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 96,
+   "ratio": 20.0,
+   "rule": "Interval:Proposed",
+   "norm_cost": 0.09859024870721497,
+   "flag_rate": 0.34369309413580246,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 96,
+   "ratio": 50.0,
+   "rule": "FlagNone",
+   "norm_cost": 1.0,
+   "flag_rate": 0.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 96,
+   "ratio": 50.0,
+   "rule": "FlagAll",
+   "norm_cost": 0.10765328736764344,
+   "flag_rate": 1.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 96,
+   "ratio": 50.0,
+   "rule": "Point",
+   "norm_cost": 0.30165131740950507,
+   "flag_rate": 0.14602237654320988,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 96,
+   "ratio": 50.0,
+   "rule": "Point+margin",
+   "norm_cost": 0.05565895099729131,
+   "flag_rate": 0.42170717592592594,
+   "margin_mean": 0.6076986833278754
+  },
+  {
+   "backbone": "NLinear",
+   "H": 96,
+   "ratio": 50.0,
+   "rule": "Interval:Global",
+   "norm_cost": 0.06902831814823936,
+   "flag_rate": 0.3323360339506173,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 96,
+   "ratio": 50.0,
+   "rule": "Interval:Proposed",
+   "norm_cost": 0.06166830829844866,
+   "flag_rate": 0.34369309413580246,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 192,
+   "ratio": 2.0,
+   "rule": "FlagNone",
+   "norm_cost": 1.0,
+   "flag_rate": 0.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 192,
+   "ratio": 2.0,
+   "rule": "FlagAll",
+   "norm_cost": 2.6436806643249704,
+   "flag_rate": 1.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 192,
+   "ratio": 2.0,
+   "rule": "Point",
+   "norm_cost": 0.4456729595887512,
+   "flag_rate": 0.14722779088050314,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 192,
+   "ratio": 2.0,
+   "rule": "Point+margin",
+   "norm_cost": 0.4435799528571473,
+   "flag_rate": 0.15174479166666666,
+   "margin_mean": 0.01604632997006399
+  },
+  {
+   "backbone": "NLinear",
+   "H": 192,
+   "ratio": 2.0,
+   "rule": "Interval:Global",
+   "norm_cost": 0.6635341075141259,
+   "flag_rate": 0.34482213050314464,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 192,
+   "ratio": 2.0,
+   "rule": "Interval:Proposed",
+   "norm_cost": 0.7087445975711854,
+   "flag_rate": 0.36491106525157235,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 192,
+   "ratio": 5.0,
+   "rule": "FlagNone",
+   "norm_cost": 1.0,
+   "flag_rate": 0.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 192,
+   "ratio": 5.0,
+   "rule": "FlagAll",
+   "norm_cost": 1.0574722657299882,
+   "flag_rate": 1.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 192,
+   "ratio": 5.0,
+   "rule": "Point",
+   "norm_cost": 0.3714035038940738,
+   "flag_rate": 0.14722779088050314,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 192,
+   "ratio": 5.0,
+   "rule": "Point+margin",
+   "norm_cost": 0.2806464069793665,
+   "flag_rate": 0.22957891116352203,
+   "margin_mean": 0.1988995252342034
+  },
+  {
+   "backbone": "NLinear",
+   "H": 192,
+   "ratio": 5.0,
+   "rule": "Interval:Global",
+   "norm_cost": 0.2972230202936697,
+   "flag_rate": 0.34482213050314464,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 192,
+   "ratio": 5.0,
+   "rule": "Interval:Proposed",
+   "norm_cost": 0.3081301340451101,
+   "flag_rate": 0.36491106525157235,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 192,
+   "ratio": 10.0,
+   "rule": "FlagNone",
+   "norm_cost": 1.0,
+   "flag_rate": 0.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 192,
+   "ratio": 10.0,
+   "rule": "FlagAll",
+   "norm_cost": 0.5287361328649941,
+   "flag_rate": 1.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 192,
+   "ratio": 10.0,
+   "rule": "Point",
+   "norm_cost": 0.3466470186625146,
+   "flag_rate": 0.14722779088050314,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 192,
+   "ratio": 10.0,
+   "rule": "Point+margin",
+   "norm_cost": 0.17951510208621024,
+   "flag_rate": 0.3008185927672956,
+   "margin_mean": 0.3376319469346675
+  },
+  {
+   "backbone": "NLinear",
+   "H": 192,
+   "ratio": 10.0,
+   "rule": "Interval:Global",
+   "norm_cost": 0.17511932455351764,
+   "flag_rate": 0.34482213050314464,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 192,
+   "ratio": 10.0,
+   "rule": "Interval:Proposed",
+   "norm_cost": 0.1745919795364183,
+   "flag_rate": 0.36491106525157235,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 192,
+   "ratio": 20.0,
+   "rule": "FlagNone",
+   "norm_cost": 1.0,
+   "flag_rate": 0.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 192,
+   "ratio": 20.0,
+   "rule": "FlagAll",
+   "norm_cost": 0.26436806643249705,
+   "flag_rate": 1.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 192,
+   "ratio": 20.0,
+   "rule": "Point",
+   "norm_cost": 0.33426877604673505,
+   "flag_rate": 0.14722779088050314,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 192,
+   "ratio": 20.0,
+   "rule": "Point+margin",
+   "norm_cost": 0.1121323336329963,
+   "flag_rate": 0.3771850432389937,
+   "margin_mean": 0.4962206457559482
+  },
+  {
+   "backbone": "NLinear",
+   "H": 192,
+   "ratio": 20.0,
+   "rule": "Interval:Global",
+   "norm_cost": 0.11406747668344161,
+   "flag_rate": 0.34482213050314464,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 192,
+   "ratio": 20.0,
+   "rule": "Interval:Proposed",
+   "norm_cost": 0.10782290228207243,
+   "flag_rate": 0.36491106525157235,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 192,
+   "ratio": 50.0,
+   "rule": "FlagNone",
+   "norm_cost": 1.0,
+   "flag_rate": 0.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 192,
+   "ratio": 50.0,
+   "rule": "FlagAll",
+   "norm_cost": 0.10574722657299883,
+   "flag_rate": 1.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 192,
+   "ratio": 50.0,
+   "rule": "Point",
+   "norm_cost": 0.32684183047726734,
+   "flag_rate": 0.14722779088050314,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 192,
+   "ratio": 50.0,
+   "rule": "Point+margin",
+   "norm_cost": 0.057879004130405906,
+   "flag_rate": 0.43547218946540883,
+   "margin_mean": 0.630417582693429
+  },
+  {
+   "backbone": "NLinear",
+   "H": 192,
+   "ratio": 50.0,
+   "rule": "Interval:Global",
+   "norm_cost": 0.077436367961396,
+   "flag_rate": 0.34482213050314464,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 192,
+   "ratio": 50.0,
+   "rule": "Interval:Proposed",
+   "norm_cost": 0.0677614559294649,
+   "flag_rate": 0.36491106525157235,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 336,
+   "ratio": 2.0,
+   "rule": "FlagNone",
+   "norm_cost": 1.0,
+   "flag_rate": 0.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 336,
+   "ratio": 2.0,
+   "rule": "FlagAll",
+   "norm_cost": 2.4868316351453283,
+   "flag_rate": 1.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 336,
+   "ratio": 2.0,
+   "rule": "Point",
+   "norm_cost": 0.47559131637044033,
+   "flag_rate": 0.1534416897827092,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 336,
+   "ratio": 2.0,
+   "rule": "Point+margin",
+   "norm_cost": 0.46793005180005626,
+   "flag_rate": 0.16406582293111419,
+   "margin_mean": 0.02782057812994135
+  },
+  {
+   "backbone": "NLinear",
+   "H": 336,
+   "ratio": 2.0,
+   "rule": "Interval:Global",
+   "norm_cost": 0.6743181500423756,
+   "flag_rate": 0.36348589921405455,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 336,
+   "ratio": 2.0,
+   "rule": "Interval:Proposed",
+   "norm_cost": 0.7542638816728605,
+   "flag_rate": 0.3978689898289413,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 336,
+   "ratio": 5.0,
+   "rule": "FlagNone",
+   "norm_cost": 1.0,
+   "flag_rate": 0.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 336,
+   "ratio": 5.0,
+   "rule": "FlagAll",
+   "norm_cost": 0.9947326540581314,
+   "flag_rate": 1.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 336,
+   "ratio": 5.0,
+   "rule": "Point",
+   "norm_cost": 0.3971512558190916,
+   "flag_rate": 0.1534416897827092,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 336,
+   "ratio": 5.0,
+   "rule": "Point+margin",
+   "norm_cost": 0.311246360101011,
+   "flag_rate": 0.22607056171983356,
+   "margin_mean": 0.17263941871389235
+  },
+  {
+   "backbone": "NLinear",
+   "H": 336,
+   "ratio": 5.0,
+   "rule": "Interval:Global",
+   "norm_cost": 0.30518604695318663,
+   "flag_rate": 0.36348589921405455,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 336,
+   "ratio": 5.0,
+   "rule": "Interval:Proposed",
+   "norm_cost": 0.3280640311525297,
+   "flag_rate": 0.3978689898289413,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 336,
+   "ratio": 10.0,
+   "rule": "FlagNone",
+   "norm_cost": 1.0,
+   "flag_rate": 0.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 336,
+   "ratio": 10.0,
+   "rule": "FlagAll",
+   "norm_cost": 0.4973663270290657,
+   "flag_rate": 1.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 336,
+   "ratio": 10.0,
+   "rule": "Point",
+   "norm_cost": 0.3710045689686421,
+   "flag_rate": 0.1534416897827092,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 336,
+   "ratio": 10.0,
+   "rule": "Point+margin",
+   "norm_cost": 0.1911712060040425,
+   "flag_rate": 0.3144374133148405,
+   "margin_mean": 0.33665233805668193
+  },
+  {
+   "backbone": "NLinear",
+   "H": 336,
+   "ratio": 10.0,
+   "rule": "Interval:Global",
+   "norm_cost": 0.18214201259012364,
+   "flag_rate": 0.36348589921405455,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 336,
+   "ratio": 10.0,
+   "rule": "Interval:Proposed",
+   "norm_cost": 0.18599741431241942,
+   "flag_rate": 0.3978689898289413,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 336,
+   "ratio": 20.0,
+   "rule": "FlagNone",
+   "norm_cost": 1.0,
+   "flag_rate": 0.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 336,
+   "ratio": 20.0,
+   "rule": "FlagAll",
+   "norm_cost": 0.24868316351453285,
+   "flag_rate": 1.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 336,
+   "ratio": 20.0,
+   "rule": "Point",
+   "norm_cost": 0.3579312255434173,
+   "flag_rate": 0.1534416897827092,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 336,
+   "ratio": 20.0,
+   "rule": "Point+margin",
+   "norm_cost": 0.11860987359819658,
+   "flag_rate": 0.38820012713823393,
+   "margin_mean": 0.4947971134696056
+  },
+  {
+   "backbone": "NLinear",
+   "H": 336,
+   "ratio": 20.0,
+   "rule": "Interval:Global",
+   "norm_cost": 0.12061999540859214,
+   "flag_rate": 0.36348589921405455,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 336,
+   "ratio": 20.0,
+   "rule": "Interval:Proposed",
+   "norm_cost": 0.11496410589236428,
+   "flag_rate": 0.3978689898289413,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 336,
+   "ratio": 50.0,
+   "rule": "FlagNone",
+   "norm_cost": 1.0,
+   "flag_rate": 0.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 336,
+   "ratio": 50.0,
+   "rule": "FlagAll",
+   "norm_cost": 0.09947326540581314,
+   "flag_rate": 1.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 336,
+   "ratio": 50.0,
+   "rule": "Point",
+   "norm_cost": 0.3500872194882824,
+   "flag_rate": 0.1534416897827092,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 336,
+   "ratio": 50.0,
+   "rule": "Point+margin",
+   "norm_cost": 0.05907450335984037,
+   "flag_rate": 0.45599081137309294,
+   "margin_mean": 0.6506470953607177
+  },
+  {
+   "backbone": "NLinear",
+   "H": 336,
+   "ratio": 50.0,
+   "rule": "Interval:Global",
+   "norm_cost": 0.08370678509967325,
+   "flag_rate": 0.36348589921405455,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 336,
+   "ratio": 50.0,
+   "rule": "Interval:Proposed",
+   "norm_cost": 0.0723441208403312,
+   "flag_rate": 0.3978689898289413,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 720,
+   "ratio": 2.0,
+   "rule": "FlagNone",
+   "norm_cost": 1.0,
+   "flag_rate": 0.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 720,
+   "ratio": 2.0,
+   "rule": "FlagAll",
+   "norm_cost": 2.234024940383067,
+   "flag_rate": 1.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 720,
+   "ratio": 2.0,
+   "rule": "Point",
+   "norm_cost": 0.5061015922097877,
+   "flag_rate": 0.17007573099415205,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 720,
+   "ratio": 2.0,
+   "rule": "Point+margin",
+   "norm_cost": 0.503418330597976,
+   "flag_rate": 0.17687763157894737,
+   "margin_mean": 0.01891271155465652
+  },
+  {
+   "backbone": "NLinear",
+   "H": 720,
+   "ratio": 2.0,
+   "rule": "Interval:Global",
+   "norm_cost": 0.6946290000103925,
+   "flag_rate": 0.4055633040935673,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 720,
+   "ratio": 2.0,
+   "rule": "Interval:Proposed",
+   "norm_cost": 0.7914486574898294,
+   "flag_rate": 0.450891081871345,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 720,
+   "ratio": 5.0,
+   "rule": "FlagNone",
+   "norm_cost": 1.0,
+   "flag_rate": 0.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 720,
+   "ratio": 5.0,
+   "rule": "FlagAll",
+   "norm_cost": 0.8936099761532269,
+   "flag_rate": 1.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 720,
+   "ratio": 5.0,
+   "rule": "Point",
+   "norm_cost": 0.41888475765107286,
+   "flag_rate": 0.17007573099415205,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 720,
+   "ratio": 5.0,
+   "rule": "Point+margin",
+   "norm_cost": 0.3445987418688739,
+   "flag_rate": 0.23358435672514619,
+   "margin_mean": 0.1385635548782077
+  },
+  {
+   "backbone": "NLinear",
+   "H": 720,
+   "ratio": 5.0,
+   "rule": "Interval:Global",
+   "norm_cost": 0.312175124689924,
+   "flag_rate": 0.4055633040935673,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 720,
+   "ratio": 5.0,
+   "rule": "Interval:Proposed",
+   "norm_cost": 0.34005994069883916,
+   "flag_rate": 0.450891081871345,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 720,
+   "ratio": 10.0,
+   "rule": "FlagNone",
+   "norm_cost": 1.0,
+   "flag_rate": 0.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 720,
+   "ratio": 10.0,
+   "rule": "FlagAll",
+   "norm_cost": 0.44680498807661345,
+   "flag_rate": 1.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 720,
+   "ratio": 10.0,
+   "rule": "Point",
+   "norm_cost": 0.3898124794648346,
+   "flag_rate": 0.17007573099415205,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 720,
+   "ratio": 10.0,
+   "rule": "Point+margin",
+   "norm_cost": 0.20574560937178982,
+   "flag_rate": 0.33904795321637426,
+   "margin_mean": 0.3400254665086614
+  },
+  {
+   "backbone": "NLinear",
+   "H": 720,
+   "ratio": 10.0,
+   "rule": "Interval:Global",
+   "norm_cost": 0.18469049958310116,
+   "flag_rate": 0.4055633040935673,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 720,
+   "ratio": 10.0,
+   "rule": "Interval:Proposed",
+   "norm_cost": 0.18959703510184242,
+   "flag_rate": 0.450891081871345,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 720,
+   "ratio": 20.0,
+   "rule": "FlagNone",
+   "norm_cost": 1.0,
+   "flag_rate": 0.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 720,
+   "ratio": 20.0,
+   "rule": "FlagAll",
+   "norm_cost": 0.22340249403830673,
+   "flag_rate": 1.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 720,
+   "ratio": 20.0,
+   "rule": "Point",
+   "norm_cost": 0.3752763403717155,
+   "flag_rate": 0.17007573099415205,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 720,
+   "ratio": 20.0,
+   "rule": "Point+margin",
+   "norm_cost": 0.12472669743377385,
+   "flag_rate": 0.4210568713450292,
+   "margin_mean": 0.5168006582600372
+  },
+  {
+   "backbone": "NLinear",
+   "H": 720,
+   "ratio": 20.0,
+   "rule": "Interval:Global",
+   "norm_cost": 0.12094818702968975,
+   "flag_rate": 0.4055633040935673,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 720,
+   "ratio": 20.0,
+   "rule": "Interval:Proposed",
+   "norm_cost": 0.11436558230334407,
+   "flag_rate": 0.450891081871345,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 720,
+   "ratio": 50.0,
+   "rule": "FlagNone",
+   "norm_cost": 1.0,
+   "flag_rate": 0.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 720,
+   "ratio": 50.0,
+   "rule": "FlagAll",
+   "norm_cost": 0.0893609976153227,
+   "flag_rate": 1.0,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 720,
+   "ratio": 50.0,
+   "rule": "Point",
+   "norm_cost": 0.366554656915844,
+   "flag_rate": 0.17007573099415205,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 720,
+   "ratio": 50.0,
+   "rule": "Point+margin",
+   "norm_cost": 0.0603812925542588,
+   "flag_rate": 0.5084390350877193,
+   "margin_mean": 0.7146877254176968
+  },
+  {
+   "backbone": "NLinear",
+   "H": 720,
+   "ratio": 50.0,
+   "rule": "Interval:Global",
+   "norm_cost": 0.0827027994976429,
+   "flag_rate": 0.4055633040935673,
+   "margin_mean": null
+  },
+  {
+   "backbone": "NLinear",
+   "H": 720,
+   "ratio": 50.0,
+   "rule": "Interval:Proposed",
+   "norm_cost": 0.06922671062424504,
+   "flag_rate": 0.450891081871345,
+   "margin_mean": null
+  }
+ ]
+}

@@ -1,5 +1,5 @@
 DOC: 10_DECISION_LOG | OWNER: Aarush | CADENCE: per-decision
-STATUS: active | LAST-UPDATED: 2026-08-30 (rev5) | SUPERSEDES: rev3 of 2026-08-16 (append block) AND rev4 of 2026-08-30; this is the first file to contain BOTH lineages
+STATUS: active | LAST-UPDATED: 2026-09-02 (rev5) | SUPERSEDES: rev3 of 2026-08-16 (append block) AND rev4 of 2026-08-30; this is the first file to contain BOTH lineages
 
 # 10 - DECISION LOG
 Format: ID | date | context | options | decision | rationale | reversibility | affected docs.
@@ -36,6 +36,12 @@ D013 | 2026-08-29 | Where session-written code lives | push at the end vs hand o
 
 D014 | 2026-08-30 | How coverage is reported on wide grids | worst-cell alone vs worst-cell + distribution | **report `cell_p05`, `frac_within_5pt` and `frac_below_80` alongside the raw minimum** | a minimum over a 300-cell grid and a minimum over a 42-cell grid are not comparable quantities; comparing them anyway is the easiest mistake available here, and it cuts both ways — it can flatter or damn the method. Metrics added in the case-study script, `metrics.py` left untouched so the committed ETT numbers cannot move. | reversible | 23, 20, 43 (RV10)
 
+D015 | 2026-09-02 | Online protocol of record | instant feedback (as originally coded) vs realised feedback | realised feedback; instant retained in the paper's Appendix A as a labelled oracle upper bound | the original loop consumed a path's outcomes at all horizon steps before the next path was issued, i.e. up to H minus stride steps of future information, and the second-half perturbation test could not see it because the leak lay inside the first half. Finding survives: ETT worst-cell 0.8591, interaction +0.1224, 31/32 vs global | costly-to-reverse (moves every adaptive number) | 20, 23, 24, 43, paper
+D016 | 2026-09-02 | Contribution claims re-stated | keep Lock C1-C4 wording vs the paper's five items | paper wording, to be appended as C1-C5 v2 in doc 41 when it is instantiated | rule 1 of 02_OPERATING_RULES forbids silent edits to contribution claims; the fifth item (two negative methodological results) did not exist when C1-C4 were written | reversible | 41 (deferred), DELTA_002
+D017 | 2026-09-02 | Online multi-step baselines | omit and state the gap vs implement what can be implemented faithfully | implement per-horizon online conformal and conformal PID; do NOT reimplement AcMCP's autocorrelation correction | both implemented methods are specified well enough to reproduce honestly; AcMCP's distinguishing mechanism is not, and a half-correct reimplementation scored against our own layer would be worse than a stated gap. The two baselines bound that family from below and the paper says so | reversible | paper sections 2, 5, 6, 12; 20; 43
+D018 | 2026-09-02 | Decision claim | keep the v1 framing (intervals win from 5:1) vs weaken to what a tuned-margin baseline supports | weaken | a point rule with a per-channel margin tuned on the calibration block at each cost ratio matches or beats conformal gating in 22 of 40 configuration-ratio pairs. The decision value is in having a calibrated margin, not specifically a conformal one. W4 is delivered, but narrower than the Lock anticipated | costly-to-reverse | paper section 10, 41, 43
+D019 | 2026-09-02 | DELTA_002 and D012 | leave pending vs approve | approved and countersigned; see 01_IDEA_LOCK_DELTA_002 approval block | the scope reduction is the study's delivered scope under R5/R6, and the paper's Limitations states what it costs the W1 and model-agnosticism claims rather than absorbing it silently | done | 01_IDEA_LOCK_DELTA_002, paper section 12
+
 ## Pending decisions (surfaced, not yet made):
 - P01 | O2CP / 2508.13362 arXiv-title mismatch. **RESOLVED 2026-08-30** - the paper was
   retitled between v1 and v2; same authors, same ID. Cite v2. See LIT_2508.13362_o2cp.
@@ -46,5 +52,5 @@ D014 | 2026-08-30 | How coverage is reported on wide grids | worst-cell alone vs
   the sharper form.
 - P04 | The Lock says post to arXiv after S3. S3, S4 and S5 are all complete and R1 has
   been open since July with no wedge scan logged since 2026-07-17. Post now, or wait for S6?
-- P05 | `figures/fig_abl.png` plots the own-grid K curve that FR04 shows is confounded,
+- P05 | `the confounded bucket-count figure (withdrawn 2026-09-02 per P05; the confound itself is recorded in FR04 and in the paper)` plots the own-grid K curve that FR04 shows is confounded,
   and it was shown at Review 1. Replace with `fig_kabl_fixed.png`, or caption it?

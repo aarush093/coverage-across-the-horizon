@@ -1,5 +1,5 @@
 DOC: 01_IDEA_LOCK_DELTA_002 | OWNER: Aarush | CADENCE: delta-only
-STATUS: draft — awaiting Aarush approval | LAST-UPDATED: 2026-08-30 | SUPERSEDES: the 2026-08-30 draft at commit 3276bbf (which was written before the Electricity arm had run); corrects and annotates 01_IDEA_LOCK_DELTA_001 without superseding it
+STATUS: APPROVED 2026-09-02| LAST-UPDATED: 2026-08-30 | SUPERSEDES: the 2026-08-30 draft at commit 3276bbf (which was written before the Electricity arm had run); corrects and annotates 01_IDEA_LOCK_DELTA_001 without superseding it
 
 # DELTA NOTE 002 — the horizon axis is load-bearing, and only adaptation makes it pay
 Raised by: S4/S5 horizon-bucket ablation, 2026-08-30 (`scripts/run_horizon_ablation.py`; commits `0de7187`, `f35e429`, `e231c21`).
@@ -202,7 +202,7 @@ K ∈ {4,6,8,10} only, and is own-grid scored. Its rows are not wrong for what t
 not comparable across K and not a basis for choosing K. `results.json` is untouched; the new evidence
 lives in `results/horizon_ablation.json`. Logged as **FR04**.
 
-Consequence for the deck: `figures/fig_abl.png` plots the own-grid curve and has already been shown at
+Consequence for the deck: `the confounded bucket-count figure (withdrawn 2026-09-02 per P05; the confound itself is recorded in FR04 and in the paper)` plots the own-grid curve and has already been shown at
 Review 1. It needs either replacing with `fig_kabl_fixed.png` or an explicit caption. Aarush's call.
 
 ---
@@ -230,3 +230,23 @@ Note: the 3276bbf draft recorded this autocorrelation as +0.8754. Recomputed ind
 used.
 
 **Awaiting Aarush approval.** Nothing in this note has been propagated to the Idea Lock.
+
+## APPROVAL
+
+APPROVED | 2026-09-02 | Aarush Pandit
+DELTA_002 is approved as written. The scope reduction it records, ETT x4 plus a screened 50-meter
+Electricity subset on DLinear and NLinear in place of the canonical suite across
+Informer/DLinear/PatchTST, is accepted as the study's delivered scope under the Lock's own R5/R6
+contraction rule. What the reduction costs the W1 audit claim and the model-agnosticism claim is
+stated in the manuscript's Limitations rather than absorbed silently: two members of one linear
+family do not establish architectural independence, and the paper says so and names PatchTST as the
+decisive missing test. The wedge is not re-scoped; W1 is delivered narrower than claimed, and the
+narrower claim is the one the paper makes. Logged as D019.
+
+D012 COUNTERSIGNED | 2026-09-02 | NLinear substituted for the dropped Transformer backbones.
+Originally logged as a deviation without authorisation. Countersigned on the evidence that the
+substitution proved load-bearing in an unplanned way: NLinear and DLinear have materially different
+error processes (bias 4.2% vs 16.5% of interval width; calibration-to-test persistence r = -0.044 vs
++0.579), so the backbone-swap agreement of 0.0013 in worst-cell coverage is stronger evidence than
+two architecturally similar backbones would have given. The substitution remains a contraction, not
+a design choice, and Limitations says so.

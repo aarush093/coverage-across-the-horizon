@@ -12,48 +12,86 @@ value-for-value (12,625 numeric leaves, max deviation 0.0 on the reference machi
 machines, agreement to 4 decimal places with deviations at the 1e-13 level from floating-point
 summation order).
 
-## Main study -- ETT x4, 42-cell horizon-bucket x channel grid, target 90%
+<!-- BEGIN GENERATED: scripts/make_readme.py -->
+## Main study: ETT x4, 42-cell horizon-bucket x channel grid, target 90%
 
-| Method | Conditioning | Adaptive | Marginal | Worst-cell | Winkler (lower = better) |
-|---|---|---|---:|---:|---:|
-| Gaussian residual | H x C | no | 0.910 | 0.776 | 2.680 |
-| Global split CP | none | no | 0.910 | 0.767 | 2.942 |
-| Per-horizon (MSCP) | horizon | no | 0.912 | 0.725 | 2.765 |
-| Channel-only | channel | no | 0.910 | 0.780 | 2.981 |
-| Static conditional | H x C | no | 0.908 | 0.759 | 2.910 |
-| Adaptive CI (ACI) | none | yes | 0.903 | 0.745 | 2.831 |
-| **Proposed** | **H x C** | **yes** | **0.910** | **0.866** | **2.637** |
+Nine interval methods, two frozen linear backbones, 32 configurations. All adaptive rows use
+**realised feedback**: a cell's tracker sees a path's outcome only once that outcome has actually
+been observed (see "A correction we found in our own pipeline" below).
 
-Every number above and below is generated from the result files by `scripts/make_summary.py`
-(`results/SUMMARY.md`); none is typed by hand.
+| Method | Conditioning | Adaptive | Marginal | Worst-cell | Within +-5pt | Winkler |
+|---|---|---|---:|---:|---:|---:|
+| Gaussian residual | step x C | no | 0.9096 | 0.7762 | 0.461 | 2.6804 |
+| Global split CP | none | no | 0.9097 | 0.7667 | 0.226 | 2.9422 |
+| Per-horizon (MSCP) | horizon | no | 0.9123 | 0.7251 | 0.431 | 2.7649 |
+| Channel-only | channel | no | 0.9099 | 0.7797 | 0.237 | 2.9806 |
+| Static conditional | K x C | no | 0.9084 | 0.7588 | 0.520 | 2.9095 |
+| ACI | none | yes | 0.9017 | 0.7446 | 0.209 | 2.8579 |
+| Per-horizon online | horizon | yes | 0.9056 | 0.7732 | 0.626 | 2.5840 |
+| Conformal PID | horizon | yes | 0.8989 | 0.7958 | 0.726 | 2.5861 |
+| **Proposed** | **K x C** | **yes** | **0.9069** | **0.8591** | **0.872** | **2.7100** |
 
-**The gain is an interaction.** Conditioning alone (0.759) and adaptation alone (0.745) both fail;
-their combination reaches 0.866 with narrower intervals and the best Winkler score of the seven.
-Interaction term +0.129 on ETT -- and **+0.326 on the harder 300-cell Electricity surface**, where
-static conditioning collapses to 0.462 while the combination holds 0.831.
+Every number in this file is generated from the result files by `scripts/make_readme.py`, and every
+number in the paper by `scripts/make_numbers_tex.py`. None is typed by hand.
 
-**Marginal coverage is uninformative -- and the closest external benchmark shows why.** The nearest
+**The gain is an interaction.** Conditioning alone (0.7588) and adaptation alone (0.7446) both fail
+against a do-nothing global quantile (0.7667); only the combination works (0.8591). Interaction term
+**+0.1224** on ETT, and **+0.3022** on the 300-cell Electricity surface, where static
+conditioning collapses to 0.4621 and the combination holds 0.8059. Proposed beats the global baseline
+in 31/32 ETT configurations and 8/8 on Electricity.
+
+**Marginal coverage is uninformative, and the closest external benchmark shows why.** The nearest
 benchmarking work (arXiv:2601.18509) concludes MSCP is the best method, scoring marginal coverage,
-width and Winkler. On this surface MSCP has the *highest* marginal coverage of all seven methods
-(0.912) and the *worst* conditional coverage (worst-cell 0.725, below the do-nothing baseline).
+width and Winkler. On this surface MSCP has the *highest* marginal coverage of all nine methods
+(0.9123) and the *worst* conditional coverage (0.7251, below the do-nothing baseline).
 
-**Both halves of the conditioning need the adaptation.** Removing the horizon axis (K=1) costs the
-adaptive method 0.039 of worst-cell on ETT (31/32 configs) while *helping* the static one; the
-horizon x adaptation interaction is +0.060 on ETT and +0.082 on Electricity (see
-`docs/01_IDEA_LOCK_DELTA_002.md` for why the raw minimum on a 300-cell grid misleads here).
+**The horizon axis alone is not enough.** Per-horizon online conformal and conformal PID condition on
+horizon at full resolution, finer than our buckets, and adapt online. Neither closes the gap:
+0.7732 and 0.7958 against 0.8591 on ETT, 0.6032 and 0.6137 against 0.8059 on
+Electricity. AcMCP's multi-step autocorrelation correction is **not** reimplemented, so these bound
+that family from below rather than settling it.
+
+**Where we lose.** Proposed does not have the best Winkler score: per-horizon online conformal reaches
+2.5840 against 2.7100. Winkler rewards narrow intervals that mostly cover, and the
+per-horizon methods buy that while leaving individual cells to fail. Same lesson as the audit, in a
+different metric.
 
 **Adaptation is visible, not just averaged** (`results/tr_ecl.json`, `figures/fig_traces.png`).
-On Electricity the test block crosses a season. Static global conformal spends 17.5% of it below
-0.85 coverage with ~3-week dips, bottoming at 0.775 at H=720; the adaptive conditional layer holds
-0.858 through the identical window on identical forecasts. On the same-season ETT split the effect
-is small and ACI alone is *worse* than doing nothing -- the interaction again.
+On Electricity the test block crosses a season: global conformal spends 17.5% of it below
+0.85 coverage with dips averaging 21.8 days, against 6.3% and 9.0 days for the adaptive
+conditional layer. On the same-season ETT split the advantage disappears entirely (16.0% against
+16.3%), and ACI alone is *worse* than doing nothing (22.8%). Rolling-coverage stability is a
+shift phenomenon, not a free win.
 
-**Whole-path coverage is priced, not promised.** Per-step methods give ~0.000 joint whole-path
-coverage; restoring ~0.91 whole-path coverage costs ~10x the interval width (MaxScore layer).
+**Whole-path coverage is priced, not promised.** Per-step methods give essentially zero joint
+whole-path coverage. A max-score layer restores 0.8772 at 3.25x the width on ETT and 0.9124 at 10.16x on
+Electricity, so the price of a whole-path guarantee ranges from three to ten times the width
+depending on the surface.
 
-**Decision layer.** Interval-gated peak flagging beats the point-forecast rule only when misses cost
->=5x false alarms (normalised cost 0.167 vs 0.362 at 10:1); at 2:1 the point rule is cheaper, and
-the worst-channel interval rule is worse than doing nothing. Reported both ways.
+**Decision layer, reported against ourselves.** Interval gating beats a bare point-forecast rule once
+misses cost about 5x a false alarm (0.1773 against 0.3621 at 10:1). It does **not** beat a
+point rule with a per-channel margin tuned on the calibration block at the same cost ratio, which
+costs 0.1867 at 10:1; across the sweep the conformal rule wins only 18/40 configuration-ratio
+pairs. The decision value is in having a calibrated margin, not specifically a conformal one.
+
+**Ablations, on all 32 configurations.** gamma: worst-cell rises monotonically (0.7570 at 0 to
+0.8739 at 0.1) and our pre-committed default of 0.02 (0.8591) is **not** the best setting.
+Scale: Proposed is exactly invariant to MAD versus standard deviation; the baseline is not, and is
+in fact better with standard deviation (0.7805) than with MAD (0.7667). Bucket count: K=6 is
+best (0.8591 against 0.8187 at K=1), and the horizon axis hurts the static arm while helping the
+adaptive one, a second interaction of +0.0613.
+
+## A correction we found in our own pipeline
+
+Our first implementation updated each cell's tracker with a test path's outcomes at *all* horizon
+steps before the next path was issued. With a one-day stride and H=720 that used outcomes realised
+up to 696 steps after the next forecast origin. The standard leakage check passed, because the
+leaked information lay inside the first half of the test block, which is exactly where the check
+does not look. Every adaptive number here is under the corrected protocol
+(`coverage_horizon/calibration/conditional.py::calibrate_delayed`, `scripts/run_delayed.py`); the
+earlier numbers are kept as a labelled oracle upper bound. The main finding survived. Several
+smaller claims did not, and `docs/24_FAILURE_REGISTRY.md` records which.
+<!-- END GENERATED -->
 
 ## Reproduce
 
